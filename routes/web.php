@@ -47,18 +47,21 @@ Route::post('/login', [loginController::class, 'login'])->name('login.login');
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register.index');
 Route::post('/register', [RegisterController::class, 'register'])->name('register.register');
 
-// Ruta temporal para ejecutar migraciones en Railway
+// Ruta temporal para ejecutar migraciones y seeders en Railway
 Route::get('/setup-railway-db', function () {
     try {
         error_log('Ejecutando migraciones...');
         \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
         
-        error_log('Ejecutando seeder...');
-        \Illuminate\Support\Facades\Artisan::call('db:seed', ['--class' => 'UserSeeder', '--force' => true]);
+        error_log('Ejecutando DatabaseSeeder...');
+        // Llamamos al DatabaseSeeder completo para asegurar Documentos, Comprobantes, Permisos y Usuario
+        \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
         
-        return "¡Base de datos migrada y usuario administrador creado con éxito en Railway! Ya puedes intentar iniciar sesión.";
+        $output = \Illuminate\Support\Facades\Artisan::output();
+        
+        return "¡Configuración completada en Railway! <br><br> Detalle: <pre>" . $output . "</pre><br>Ya puedes intentar iniciar sesión.";
     } catch (\Exception $e) {
-        return "Error al configurar la BD: " . $e->getMessage();
+        return "Error crítico al configurar: " . $e->getMessage() . "<br>Línea: " . $e->getLine();
     }
 });
 

@@ -13,13 +13,9 @@ class ComprobanteSeeder extends Seeder
      */
     public function run(): void
     {
-        Comprobante::insert([
-            [
-                'nombre' => 'Boleta'
-            ],
-            [
-                'nombre' => 'Factura'
-            ]
-        ]);
+        $comprobantes = ['Boleta', 'Factura'];
+        foreach ($comprobantes as $comp) {
+            Comprobante::updateOrCreate(['nombre' => $comp]);
+        }
     }
 }

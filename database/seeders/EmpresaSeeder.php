@@ -13,14 +13,16 @@ class EmpresaSeeder extends Seeder
      */
     public function run(): void
     {
-        Empresa::insert([
-            'nombre' => 'Mi Empresa',
-            'propietario' => 'Propietario',
-            'ruc' => '1234567890',
-            'porcentaje_impuesto' => '15',
-            'abreviatura_impuesto' => 'IGV',
-            'direccion' => 'Dirección de la Empresa',
-            'moneda_id' => 1
-        ]);
+        Empresa::updateOrCreate(
+            ['ruc' => '1234567890'],
+            [
+                'nombre' => 'Mi Empresa',
+                'propietario' => 'Propietario',
+                'porcentaje_impuesto' => '15',
+                'abreviatura_impuesto' => 'IGV',
+                'direccion' => 'Dirección de la Empresa',
+                'moneda_id' => 1
+            ]
+        );
     }
 }

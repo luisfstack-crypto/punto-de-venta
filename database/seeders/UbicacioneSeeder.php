@@ -13,34 +13,9 @@ class UbicacioneSeeder extends Seeder
      */
     public function run(): void
     {
-        Ubicacione::insert([
-            [
-                'nombre' => 'Estante 1',
-            ],
-            [
-                'nombre' => 'Estante 2',
-            ],
-            [
-                'nombre' => 'Estante 3',
-            ],
-            [
-                'nombre' => 'Estante 4',
-            ],
-            [
-                'nombre' => 'Estante 5',
-            ],
-            [
-                'nombre' => 'Estante 6',
-            ],
-            [
-                'nombre' => 'Estante 7',
-            ],
-            [
-                'nombre' => 'Estante 8',
-            ],
-            [
-                'nombre' => 'Estante 9',
-            ],
-        ]);
+        $estantes = ['Estante 1', 'Estante 2', 'Estante 3', 'Estante 4', 'Estante 5', 'Estante 6', 'Estante 7', 'Estante 8', 'Estante 9'];
+        foreach ($estantes as $estante) {
+            Ubicacione::updateOrCreate(['nombre' => $estante]);
+        }
     }
 }

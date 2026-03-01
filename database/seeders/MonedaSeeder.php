@@ -13,37 +13,20 @@ class MonedaSeeder extends Seeder
      */
     public function run(): void
     {
-        Moneda::insert([
-            [
-                'estandar_iso' => 'USD',
-                'nombre_completo' => 'Dólar estadounidense',
-                'simbolo' => '$'
-            ],
-            [
-                'estandar_iso' => 'EUR',
-                'nombre_completo' => 'Euro',
-                'simbolo' => '€'
-            ],
-            [
-                'estandar_iso' => 'MXN',
-                'nombre_completo' => 'Peso mexicano',
-                'simbolo' => '$'
-            ],
-            [
-                'estandar_iso' => 'PEN',
-                'nombre_completo' => 'Sol peruano',
-                'simbolo' => 'S/'
-            ],
-            [
-                'estandar_iso' => 'ARS',
-                'nombre_completo' => 'Peso Argentino',
-                'simbolo' => '$'
-            ],
-            [
-                'estandar_iso' => 'CLP',
-                'nombre_completo' => 'Peso Chileno',
-                'simbolo' => '$'
-            ],
-        ]);
+        $monedas = [
+            ['iso' => 'USD', 'nombre' => 'Dólar estadounidense', 'simbolo' => '$'],
+            ['iso' => 'EUR', 'nombre' => 'Euro', 'simbolo' => '€'],
+            ['iso' => 'MXN', 'nombre' => 'Peso mexicano', 'simbolo' => '$'],
+            ['iso' => 'PEN', 'nombre' => 'Sol peruano', 'simbolo' => 'S/'],
+            ['iso' => 'ARS', 'nombre' => 'Peso Argentino', 'simbolo' => '$'],
+            ['iso' => 'CLP', 'nombre' => 'Peso Chileno', 'simbolo' => '$'],
+        ];
+
+        foreach ($monedas as $m) {
+            Moneda::updateOrCreate(
+                ['estandar_iso' => $m['iso']],
+                ['nombre_completo' => $m['nombre'], 'simbolo' => $m['simbolo']]
+            );
+        }
     }
 }

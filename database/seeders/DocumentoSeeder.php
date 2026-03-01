@@ -12,19 +12,9 @@ class DocumentoSeeder extends Seeder
      */
     public function run(): void
     {
-        Documento::insert([
-            [
-                'nombre' => 'DNI',
-            ],
-            [
-                'nombre' => 'Pasaporte',
-            ],
-            [
-                'nombre' => 'RUC',
-            ],
-            [
-                'nombre' => 'Carnet Extranjería',
-            ],
-        ]);
+        $documentos = ['DNI', 'Pasaporte', 'RUC', 'Carnet Extranjería'];
+        foreach ($documentos as $doc) {
+            Documento::updateOrCreate(['nombre' => $doc]);
+        }
     }
 }
