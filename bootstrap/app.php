@@ -21,6 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'check-show-venta-user' => \App\Http\Middleware\CheckShowVentaUser::class,
             'check-show-compra-user' => \App\Http\Middleware\CheckShowCompraUser::class,
             'check-user-estado' => \App\Http\Middleware\CheckUserEstado::class,
+            'check-user-status' => \App\Http\Middleware\CheckUserStatus::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

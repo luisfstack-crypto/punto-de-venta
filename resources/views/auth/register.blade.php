@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <title>Punto de Venta - Iniciar Sesión</title>
+    <title>Punto de Venta - Registrarse</title>
     <link href="{{ asset('css/styles.css') }}" rel="stylesheet" />
     <link href="{{ asset('css/theme-custom.css') }}" rel="stylesheet" />
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
@@ -97,14 +97,14 @@
             <div class="login-wrapper">
                 <div class="container">
                     <div class="row justify-content-center">
-                        <div class="col-lg-4 col-md-6">
+                        <div class="col-lg-5 col-md-8">
                             <div class="card login-card">
                                 <div class="card-header">
                                     <div class="brand-logo">
                                         <i class="fas fa-cash-register"></i>
                                     </div>
                                     <h3>Punto de Venta</h3>
-                                    <p>Inicia sesión para continuar</p>
+                                    <p>Regístrate y sube tu comprobante para acceder</p>
                                 </div>
                                 <div class="card-body">
                                     @if ($errors->any())
@@ -116,32 +116,59 @@
                                         @endforeach
                                     @endif
 
-                                    <form action="{{ route('login.login') }}" method="post">
+                                    <form action="{{ route('register.register') }}" method="post" enctype="multipart/form-data">
                                         @csrf
                                         <div class="form-floating mb-3">
                                             <input autofocus autocomplete="off"
-                                                value="admin@gmail.com"
+                                                class="form-control"
+                                                name="name"
+                                                value="{{ old('name') }}"
+                                                id="inputName"
+                                                type="text"
+                                                placeholder="Nombre de usuario" />
+                                            <label for="inputName">Nombre</label>
+                                        </div>
+
+                                        <div class="form-floating mb-3">
+                                            <input autocomplete="off"
                                                 class="form-control"
                                                 name="email"
+                                                value="{{ old('email') }}"
                                                 id="inputEmail"
                                                 type="email"
                                                 placeholder="correo@ejemplo.com" />
                                             <label for="inputEmail">Correo electrónico</label>
                                         </div>
-                                        <div class="form-floating mb-4">
+                                        
+                                        <div class="form-floating mb-3">
                                             <input class="form-control"
                                                 name="password"
-                                                value="12345678"
                                                 id="inputPassword"
                                                 type="password"
                                                 placeholder="Contraseña" />
                                             <label for="inputPassword">Contraseña</label>
                                         </div>
+
+                                        <div class="form-floating mb-3">
+                                            <input class="form-control"
+                                                name="password_confirmation"
+                                                id="inputPasswordConfirm"
+                                                type="password"
+                                                placeholder="Confirmar Contraseña" />
+                                            <label for="inputPasswordConfirm">Confirmar Contraseña</label>
+                                        </div>
+
+                                        <div class="mb-4">
+                                            <label for="receipt" class="form-label" style="color: #5A5A60;">Comprobante de pago o Identidad (PDF/Imagen)</label>
+                                            <input class="form-control" type="file" id="receipt" name="payment_receipt" accept=".pdf,.jpg,.jpeg,.png">
+                                        </div>
+
                                         <button class="btn btn-login mb-3" type="submit">
-                                            <i class="fas fa-sign-in-alt me-2"></i> Iniciar sesión
+                                            <i class="fas fa-user-plus me-2"></i> Registrarse
                                         </button>
+
                                         <div class="text-center">
-                                            <a href="{{ route('register.index') }}" class="text-muted text-decoration-none">¿No tienes cuenta? Regístrate</a>
+                                            <a href="{{ route('login.index') }}" class="text-muted text-decoration-none">¿Ya tienes cuenta? Inicia sesión</a>
                                         </div>
                                     </form>
                                 </div>

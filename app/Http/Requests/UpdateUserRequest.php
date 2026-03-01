@@ -25,8 +25,11 @@ class UpdateUserRequest extends FormRequest
         return [
             'name' => 'required|max:255',
             'email' => 'required|email|max:255|unique:users,email,'.$user->id,
-            'password' => 'same:password_confirm',
-            'role' => 'required|exists:roles,name'
+            'password' => 'nullable|same:password_confirm',
+            'role' => 'nullable|exists:roles,name',
+            'empleado_id' => 'nullable|exists:empleados,id',
+            'status' => 'required|in:pending,active,rejected',
+            'estado' => 'required|in:0,1'
         ];
     }
 }

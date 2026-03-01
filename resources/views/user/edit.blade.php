@@ -23,6 +23,29 @@
             </div>
             <div class="card-body">
 
+                <!-----Empleado----->
+                <div class="row mb-4">
+                    <label for="empleado_id" class="col-lg-2 col-form-label">Empleado:</label>
+                    <div class="col-lg-4">
+                        <select name="empleado_id" id="empleado_id" class="form-select">
+                            <option value="">- Sin Empleado -</option>
+                            @foreach ($empleados as $item)
+                            <option value="{{$item->id}}" @selected(old('empleado_id', $user->empleado_id) == $item->id)>
+                                {{$item->razon_social}}
+                            </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-text">Vincular usuario con un empleado</div>
+                    </div>
+                    <div class="col-lg-2">
+                        @error('empleado_id')
+                        <small class="text-danger">{{'*'.$message}}</small>
+                        @enderror
+                    </div>
+                </div>
+
                 <!---Nombre---->
                 <div class="row mb-4">
                     <label for="name" class="col-lg-2 col-form-label">
@@ -119,6 +142,7 @@
                         Seleccionar rol:</label>
                     <div class="col-lg-4">
                         <select name="role" id="role" class="form-select">
+                            <option value="">- Sin Rol -</option>
                             @foreach ($roles as $item)
                             <option
                                 value="{{$item->name}}"
@@ -139,6 +163,60 @@
                         @enderror
                     </div>
                 </div>
+
+                <!---Estado Sistema---->
+                <div class="row mb-4">
+                    <label for="estado" class="col-lg-2 col-form-label">Estado (Sistema):</label>
+                    <div class="col-lg-4">
+                        <select name="estado" id="estado" class="form-select">
+                            <option value="1" @selected(old('estado', $user->estado) == 1)>Activo</option>
+                            <option value="0" @selected(old('estado', $user->estado) == 0)>Inactivo</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-text">Si está inactivo, no podrá ingresar al sistema bajo ningún motivo.</div>
+                    </div>
+                    <div class="col-lg-2">
+                        @error('estado')
+                        <small class="text-danger">{{'*'.$message}}</small>
+                        @enderror
+                    </div>
+                </div>
+
+                <!---Status de Aprobación---->
+                <div class="row mb-4">
+                    <label for="status" class="col-lg-2 col-form-label">Aprobación (Registro):</label>
+                    <div class="col-lg-4">
+                        <select name="status" id="status" class="form-select">
+                            <option value="pending" @selected(old('status', $user->status) == 'pending')>Pendiente</option>
+                            <option value="active" @selected(old('status', $user->status) == 'active')>Activo (Aprobado)</option>
+                            <option value="rejected" @selected(old('status', $user->status) == 'rejected')>Rechazado</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-text">Estado de validación de su registro.</div>
+                    </div>
+                    <div class="col-lg-2">
+                        @error('status')
+                        <small class="text-danger">{{'*'.$message}}</small>
+                        @enderror
+                    </div>
+                </div>
+
+                <!---Comprobante---->
+                @if($user->payment_receipt)
+                <div class="row mb-4">
+                    <label class="col-lg-2 col-form-label">Comprobante Actual:</label>
+                    <div class="col-lg-4 d-flex align-items-center">
+                        <a href="{{ route('admin.users.receipt', $user) }}" target="_blank" class="btn btn-sm btn-info text-white">
+                            <i class="fas fa-eye me-1"></i> Ver Documento
+                        </a>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="form-text">El usuario adjuntó un documento en su registro.</div>
+                    </div>
+                </div>
+                @endif
 
             </div>
             <div class="card-footer text-center">

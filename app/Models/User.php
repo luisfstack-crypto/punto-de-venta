@@ -25,7 +25,9 @@ class User extends Authenticatable
         'email',
         'password',
         'estado',
-        'empleado_id'
+        'empleado_id',
+        'status',
+        'payment_receipt'
     ];
 
     /**

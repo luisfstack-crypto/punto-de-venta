@@ -58,7 +58,10 @@ class userController extends Controller
         try {
             $request->merge(['password' =>  Hash::make($request->password)]);
             $user = User::create($request->all());
-            $user->assignRole($request->role);
+            
+            if ($request->filled('role')) {
+                $user->assignRole($request->role);
+            }
 
             DB::commit();
             ActivityLogService::log('Creación de usuario', 'Usuarios', $request->validated());
@@ -84,7 +87,8 @@ class userController extends Controller
     public function edit(User $user): View
     {
         $roles = Role::where('name', '!=', 'administrador')->get();
-        return view('user.edit', compact('user', 'roles'));
+        $empleados = Empleado::all();
+        return view('user.edit', compact('user', 'roles', 'empleados'));
     }
 
     /**
@@ -102,7 +106,12 @@ class userController extends Controller
                 $request->merge(['password' => Hash::make($request->password)]);
             }
             $user->update($request->all());
-            $user->syncRoles([$request->role]);
+            
+            if ($request->filled('role')) {
+                $user->syncRoles([$request->role]);
+            } else {
+                $user->syncRoles([]);
+            }
 
             DB::commit();
             ActivityLogService::log('Edición de usuario', 'Usuarios', $request->validated());

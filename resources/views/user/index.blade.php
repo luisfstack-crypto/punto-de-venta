@@ -48,7 +48,7 @@
                 <tbody>
                     @foreach ($users as $item)
                     <tr>
-                        <td>{{$item->empleado->razon_social}}</td>
+                        <td>{{ optional($item->empleado)->razon_social ?? '- Sin Empleado -' }}</td>
                         <td>{{$item->name}}</td>
                         <td>{{$item->email}}</td>
                         <td>

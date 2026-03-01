@@ -25,6 +25,8 @@ use App\Http\Controllers\roleController;
 use App\Http\Controllers\userController;
 use App\Http\Controllers\ventaController;
 use App\Http\Controllers\CotizacionController;
+use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\AdminUserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -41,8 +43,17 @@ Route::get('/', [homeController::class, 'index'])->name('panel');
 Route::get('/login', [loginController::class, 'index'])->name('login.index');
 Route::post('/login', [loginController::class, 'login'])->name('login.login');
 
+// Registration routes
+Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register.index');
+Route::post('/register', [RegisterController::class, 'register'])->name('register.register');
+
+// Waiting for approval route
+Route::get('/waiting-approval', function () {
+    return view('auth.waiting');
+})->name('waiting.approval');
+
 // Protected Admin Routes
-Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
+Route::group(['middleware' => ['auth', 'check-user-status'], 'prefix' => 'admin'], function () {
     
     // Resource Routes
     Route::resource('categorias', categoriaController::class)->except('show');
@@ -53,7 +64,16 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'admin'], function () {
     Route::resource('proveedores', proveedorController::class)->except('show');
     Route::resource('compras', compraController::class)->except('edit', 'update', 'destroy');
     Route::resource('ventas', ventaController::class)->except('edit', 'update', 'destroy');
-    Route::resource('users', userController::class)->except('show');
+    
+    // Rutas exclusivas para el rol de administrador
+    Route::group(['middleware' => ['role:administrador']], function () {
+        Route::resource('users', userController::class)->except('show');
+        Route::get('/users/pending', [AdminUserController::class, 'pendingUsers'])->name('admin.users.pending');
+        Route::get('/users/receipt/{user}', [AdminUserController::class, 'showReceipt'])->name('admin.users.receipt');
+        Route::post('/users/{user}/approve', [AdminUserController::class, 'approve'])->name('admin.users.approve');
+        Route::post('/users/{user}/reject', [AdminUserController::class, 'reject'])->name('admin.users.reject');
+    });
+
     Route::resource('roles', roleController::class)->except('show');
     Route::resource('profile', profileController::class)->only('index', 'update');
     Route::resource('activityLog', ActivityLogController::class)->only('index');
