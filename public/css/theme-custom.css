@@ -31,6 +31,13 @@
     --pv-shadow:        0 1px 6px rgba(0,0,0,0.08);
     --pv-shadow-md:     0 4px 16px rgba(0,0,0,0.10);
     --pv-card-radius:   0.6rem;
+
+    --pv-dash-primary:   #4e73df;
+    --pv-dash-secondary: #858796;
+    --pv-dash-success:   #1cc88a;
+    --pv-dash-info:      #36b9cc;
+    --pv-dash-warning:   #f6c23e;
+    --pv-dash-danger:    #e74a3b;
 }
 
 /* ================================================================
@@ -57,6 +64,14 @@
     --pv-berry:         #A0006D;
     --pv-shadow:        0 2px 10px rgba(0,0,0,0.4);
     --pv-shadow-md:     0 6px 20px rgba(0,0,0,0.5);
+
+    /* Dashboard Summary Cards - Dark Mode (Muted for coherence) */
+    --pv-dash-primary:   #26262A;
+    --pv-dash-secondary: #26262A;
+    --pv-dash-success:   #26262A;
+    --pv-dash-info:      #26262A;
+    --pv-dash-warning:   #26262A;
+    --pv-dash-danger:    #26262A;
 }
 
 /* ================================================================
@@ -307,12 +322,23 @@ main > .container-fluid {
     transition: background-color 0.3s ease !important;
 }
 
-/* Cards coloreadas del panel (bg-primary, bg-success, etc.) — se mantienen */
+.card.bg-primary { background-color: var(--pv-dash-primary) !important; border: none !important; }
+.card.bg-secondary { background-color: var(--pv-dash-secondary) !important; border: none !important; }
+.card.bg-success { background-color: var(--pv-dash-success) !important; border: none !important; }
+.card.bg-info { background-color: var(--pv-dash-info) !important; border: none !important; }
+.card.bg-warning { background-color: var(--pv-dash-warning) !important; border: none !important; }
+.card.bg-danger { background-color: var(--pv-dash-danger) !important; border: none !important; }
+
 .card.bg-primary, .card.bg-secondary, .card.bg-success,
 .card.bg-info, .card.bg-warning, .card.bg-danger {
-    border: none !important;
     box-shadow: var(--pv-shadow-md) !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease !important;
 }
+.card.bg-primary:hover, .card.bg-secondary:hover, .card.bg-success:hover,
+.card.bg-info:hover, .card.bg-warning:hover, .card.bg-danger:hover {
+    transform: translateY(-3px) !important;
+}
+
 .card.bg-primary .card-body,
 .card.bg-secondary .card-body,
 .card.bg-success .card-body,
@@ -321,6 +347,16 @@ main > .container-fluid {
 .card.bg-danger .card-body {
     background-color: transparent !important;
     color: #fff !important;
+}
+
+.card.bg-primary .card-footer,
+.card.bg-secondary .card-footer,
+.card.bg-success .card-footer,
+.card.bg-info .card-footer,
+.card.bg-warning .card-footer,
+.card.bg-danger .card-footer {
+    background-color: rgba(0,0,0,0.1) !important;
+    border-top: 1px solid rgba(255,255,255,0.1) !important;
 }
 
 /* ================================================================
@@ -748,13 +784,13 @@ h1, h2, h3, h4, h5, h6 { color: var(--pv-text-primary) !important; }
 .fw-semibold, .fw-bold, .fw-bolder { color: var(--pv-text-primary) !important; }
 
 /* Cards coloreadas: textos blancos siempre */
-.bg-primary p, .bg-primary span, .bg-primary small,
-.bg-secondary p, .bg-secondary span, .bg-secondary small,
-.bg-success p, .bg-success span, .bg-success small,
-.bg-info p, .bg-info span, .bg-info small,
-.bg-warning p, .bg-warning span, .bg-warning small,
-.bg-danger p, .bg-danger span, .bg-danger small {
-    color: rgba(255,255,255,0.9) !important;
+.bg-primary p, .bg-primary span, .bg-primary small, .bg-primary i, .bg-primary a,
+.bg-secondary p, .bg-secondary span, .bg-secondary small, .bg-secondary i, .bg-secondary a,
+.bg-success p, .bg-success span, .bg-success small, .bg-success i, .bg-success a,
+.bg-info p, .bg-info span, .bg-info small, .bg-info i, .bg-info a,
+.bg-warning p, .bg-warning span, .bg-warning small, .bg-warning i, .bg-warning a,
+.bg-danger p, .bg-danger span, .bg-danger small, .bg-danger i, .bg-danger a {
+    color: #FFFFFF !important;
 }
 
 hr { border-color: var(--pv-border) !important; opacity: 1 !important; }

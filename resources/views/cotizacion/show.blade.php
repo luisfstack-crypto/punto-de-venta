@@ -120,7 +120,7 @@
                         <span class="fw-bold">${{number_format($cotizacion->total - $cotizacion->impuesto, 2)}}</span>
                     </div>
                     <div class="d-flex justify-content-between mb-2">
-                        <span class="text-muted">IVA (16%):</span>
+                        <span class="text-muted">{{$empresa->abreviatura_impuesto}} ({{$empresa->porcentaje_impuesto}}%):</span>
                         <span class="fw-bold">${{number_format($cotizacion->impuesto, 2)}}</span>
                     </div>
                     <hr>

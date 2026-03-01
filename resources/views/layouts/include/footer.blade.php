@@ -2,12 +2,12 @@
     <div class="container-fluid px-4">
         <div class="d-flex align-items-center justify-content-between small">
             <div class="text-muted">
-                Copyright &copy; Your Website 2022 - Laravel v.{{app()->version()}} - PHP v.{{phpversion()}}
+                Copyright &copy; SakNoel - Laravel v.{{app()->version()}} - PHP v.{{phpversion()}}
             </div>
             <div>
-                <a href="#">Privacy Policy</a>
+                <a href="#">Política de Privacidad</a>
                 &middot;
-                <a href="#">Terms &amp; Conditions</a>
+                <a href="#">Términos y Condiciones</a>
             </div>
         </div>
     </div>

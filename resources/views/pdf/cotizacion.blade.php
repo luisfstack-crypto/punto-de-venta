@@ -90,7 +90,7 @@
                 <td class="text-right">{{ number_format($cotizacion->total - $cotizacion->impuesto, 2) }}</td>
             </tr>
                 <tr>
-                    <td colspan="3" class="text-right total-label">IVA (16%):</td>
+                    <td colspan="3" class="text-right total-label">{{ $empresa->abreviatura_impuesto }} ({{ $empresa->porcentaje_impuesto }}%):</td>
                     <td class="total-amount">{{ number_format($cotizacion->impuesto, 2) }}</td>
                 </tr>
             <tr>

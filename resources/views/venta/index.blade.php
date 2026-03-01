@@ -120,11 +120,5 @@
 
 @push('js')
 <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" type="text/javascript"></script>
-<script>
-    // Simple-DataTables
-    // https://github.com/fiduswriter/Simple-DataTables/wiki
-    window.addEventListener('DOMContentLoaded', event => {
-        const dataTable = new simpleDatatables.DataTable("#datatablesSimple", {})
-    });
-</script>
+<script src="{{ asset('js/datatables-simple-demo.js') }}"></script>
 @endpush

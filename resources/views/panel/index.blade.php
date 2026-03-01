@@ -225,7 +225,7 @@
         data: {
             labels: nombres,
             datasets: [{
-                label: 'stock',
+                label: 'inventario',
                 backgroundColor: "rgba(2,117,216,1)",
                 borderColor: "#fff",
                 data: stock,

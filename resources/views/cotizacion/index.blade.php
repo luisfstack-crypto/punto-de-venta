@@ -149,7 +149,7 @@
                                     </li>
                                     <li>
                                         <a class="dropdown-item" href="{{route('cotizaciones.show', $item)}}">
-                                            <i class="fa-solid fa-eye me-2"></i> Vista Vervia
+                                            <i class="fa-solid fa-eye me-2"></i> Vista Previa
                                         </a>
                                     </li>
                                     <li>
@@ -198,7 +198,14 @@
 <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" type="text/javascript"></script>
 <script>
     window.addEventListener('DOMContentLoaded', event => {
-        const dataTable = new simpleDatatables.DataTable("#datatablesSimple", {})
+        const dataTable = new simpleDatatables.DataTable("#datatablesSimple", {
+            labels: {
+                placeholder: "Buscar...",
+                perPage: "{select} registros por página",
+                noRows: "No se encontraron registros",
+                info: "Mostrando {start} a {end} de {rows} registros",
+            }
+        });
     });
 
     function copyToClipboard(text) {
