@@ -29,7 +29,7 @@ class UserApproved extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Tu cuenta ha sido aprobada',
+            subject: '¡Tu cuenta de ' . config('app.name') . ' ha sido activada!',
         );
     }
 
@@ -39,7 +39,7 @@ class UserApproved extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'emails.user_approved',
+            view: 'emails.user_active_special',
         );
     }
 
