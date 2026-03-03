@@ -3,34 +3,40 @@
 namespace App\Listeners;
 
 use Illuminate\Auth\Events\Registered;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 use App\Models\User;
-use App\Notifications\NewUserRegistered;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 use App\Mail\UserRegistrationPending;
+use Spatie\Permission\Models\Role;
 
 class NotifyAdminOfNewRegistration
 {
-    /**
-     * Create the event listener.
-     */
-    public function __construct()
-    {
-        //
-    }
+    public function __construct() {}
 
-    /**
-     * Handle the event.
-     */
     public function handle(Registered $event): void
     {
-        $admin = User::where('email', 'solucionesedgar@gmail.com')->first();
-        
-        if ($admin) {
-            $admin->notify(new NewUserRegistered($event->user));
+        $newUser = $event->user;
+
+        try {
+            Mail::to($newUser->email)->send(new UserRegistrationPending($newUser));
+        } catch (\Exception $e) {
+            Log::error('[Registro] Error al enviar correo al usuario: ' . $e->getMessage());
         }
 
-        Mail::to($event->user->email)->send(new UserRegistrationPending($event->user));
+        try {
+            $adminRole = Role::where('name', 'administrador')->first();
+            
+            if ($adminRole) {
+                $admins = User::role('administrador')->where('status', 'active')->get();
+            } else {
+                $admins = User::where('email', 'solucionesedgar@gmail.com')->get();
+            }
+
+            foreach ($admins as $admin) {
+                Mail::to($admin->email)->send(new \App\Mail\AdminNewUserNotification($newUser));
+            }
+        } catch (\Exception $e) {
+            Log::error('[Registro] Error al notificar al administrador: ' . $e->getMessage());
+        }
     }
 }
