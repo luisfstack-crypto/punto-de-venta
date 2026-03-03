@@ -18,25 +18,33 @@ class RegisterController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
-            'payment_receipt' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'name'             => 'required|string|max:255',
+            'email'            => 'required|string|email|max:255|unique:users',
+            'password'         => 'required|string|min:8|confirmed',
+            'payment_receipt'  => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
         ]);
 
-        $path = $request->file('payment_receipt')->store('receipts', 'public');
+        $path = null;
+
+        if ($request->hasFile('payment_receipt') && $request->file('payment_receipt')->isValid()) {
+            try {
+                $path = $request->file('payment_receipt')->store('receipts', 'public');
+            } catch (\Exception $e) {
+                $path = null;
+            }
+        }
 
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'name'            => $request->name,
+            'email'           => $request->email,
+            'password'        => Hash::make($request->password),
             'payment_receipt' => $path,
-            'estado' => 1,
-            'status' => 'pending'
+            'estado'          => 1,
+            'status'          => 'pending',
         ]);
 
         event(new Registered($user));
 
-        return redirect()->route('login.index')->with('success', 'Registro exitoso. Tu cuenta está pendiente de aprobación por un administrador.');
+        return redirect()->route('waiting.approval')->with('success', '¡Registro exitoso! Tu cuenta está pendiente de aprobación por un administrador.');
     }
 }
