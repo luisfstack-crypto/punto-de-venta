@@ -8,9 +8,13 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 use App\Mail\UserRegistrationPending;
 use Spatie\Permission\Models\Role;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
 
-class NotifyAdminOfNewRegistration
+class NotifyAdminOfNewRegistration implements ShouldQueue
 {
+    use InteractsWithQueue;
+
     public function __construct() {}
 
     public function handle(Registered $event): void

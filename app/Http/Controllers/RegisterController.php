@@ -43,11 +43,19 @@ class RegisterController extends Controller
             'status'          => 'pending',
         ]);
 
-        $adminEmail = 'solucionesedgar@gmail.com'; 
-        \Illuminate\Support\Facades\Notification::route('mail', $adminEmail)
-            ->notify(new \App\Notifications\NewUserRegistered($user));
+        try {
+            $adminEmail = 'solucionesedgar@gmail.com'; 
+            \Illuminate\Support\Facades\Notification::route('mail', $adminEmail)
+                ->notify(new \App\Notifications\NewUserRegistered($user));
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('[Registro] Error al enviar notificación de nuevo usuario: ' . $e->getMessage());
+        }
 
-        event(new Registered($user));
+        try {
+            event(new Registered($user));
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('[Registro] Error al despachar evento Registered: ' . $e->getMessage());
+        }
 
         return redirect()->route('waiting.approval')->with('success', '¡Registro exitoso! Tu cuenta está pendiente de aprobación por un administrador.');
     }
