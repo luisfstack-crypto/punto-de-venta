@@ -55,10 +55,16 @@ class AdminUserController extends Controller
         // Asignar el rol elegido al usuario
         $user->assignRole($request->role);
 
-        // Enviar notificación por correo
-        Mail::to($user->email)->send(new UserApproved($user));
+        try {
+            // Enviar notificación por correo
+            Mail::to($user->email)->send(new UserApproved($user));
+            $mensaje = 'Usuario aprobado exitosamente y notificado por correo.';
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('[Aprobación] Error al enviar correo a ' . $user->email . ': ' . $e->getMessage());
+            $mensaje = 'Usuario aprobado, pero el correo de notificación no pudo enviarse.';
+        }
 
-        return redirect()->back()->with('success', 'Usuario aprobado exitosamente.');
+        return redirect()->back()->with('success', $mensaje);
     }
 
     /**

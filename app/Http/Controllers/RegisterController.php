@@ -30,6 +30,7 @@ class RegisterController extends Controller
             try {
                 $path = $request->file('payment_receipt')->store('receipts', 'public');
             } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error('[Registro] Error al guardar comprobante: ' . $e->getMessage());
                 $path = null;
             }
         }
@@ -51,11 +52,13 @@ class RegisterController extends Controller
             \Illuminate\Support\Facades\Log::error('[Registro] Error al enviar notificación de nuevo usuario: ' . $e->getMessage());
         }
 
+        /* 
         try {
             event(new Registered($user));
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('[Registro] Error al despachar evento Registered: ' . $e->getMessage());
         }
+        */
 
         return redirect()->route('waiting.approval')->with('success', '¡Registro exitoso! Tu cuenta está pendiente de aprobación por un administrador.');
     }
