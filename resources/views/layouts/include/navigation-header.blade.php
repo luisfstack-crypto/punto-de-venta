@@ -6,22 +6,33 @@ $empresa = Empresa::first();
 ?>
 <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
     <!-- Navbar Brand-->
-    <!-- Navbar Brand-->
     <a class="navbar-brand ps-3" href="{{ route('panel') }}">
-        <!-- LOGO EMPRESA: Pon tu imagen 'logo-empresa.png' en public/assets/img/ -->
-        <img src="{{ asset('assets/img/logo-empresa.png') }}" alt="Logo" height="30"
-            class="d-inline-block align-text-top me-2">
-        {{$empresa->nombre ?? ''}}
+        @if(auth()->user()->logo)
+            <img src="{{ Storage::url(auth()->user()->logo) }}"
+                 alt="Logo"
+                 height="30"
+                 class="d-inline-block align-text-top me-2"
+                 style="object-fit:contain;">
+        @else
+            <img src="{{ asset('assets/img/logo-empresa.png') }}"
+                 alt="Logo"
+                 height="30"
+                 class="d-inline-block align-text-top me-2">
+        @endif
+        {{ $empresa->nombre ?? '' }}
     </a>
     <!-- Sidebar Toggle-->
-    <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i
-            class="fas fa-bars"></i></button>
+    <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!">
+        <i class="fas fa-bars"></i>
+    </button>
     <!-- Navbar Search-->
     <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
         <div class="input-group">
-            <input name="search" class="form-control" type="text" placeholder="Buscar ...." aria-label="Search for..."
-                aria-describedby="btnNavbarSearch" />
-            <button class="btn btn-primary" id="btnNavbarSearch" type="button"><i class="fas fa-search"></i></button>
+            <input name="search" class="form-control" type="text" placeholder="Buscar ...."
+                aria-label="Search for..." aria-describedby="btnNavbarSearch" />
+            <button class="btn btn-primary" id="btnNavbarSearch" type="button">
+                <i class="fas fa-search"></i>
+            </button>
         </div>
     </form>
     <!-- Toggle Dark/Light Mode -->
@@ -31,8 +42,8 @@ $empresa = Empresa::first();
     </button>
 
     <div class="nav-item dropdown me-3">
-        <a class="nav-link dropdown-toggle" href="#" role="button" id="notificationsDropdown" data-bs-toggle="dropdown"
-            aria-expanded="false">
+        <a class="nav-link dropdown-toggle" href="#" role="button" id="notificationsDropdown"
+            data-bs-toggle="dropdown" aria-expanded="false">
             <i class="fas fa-bell"></i>
             <span class="badge bg-danger rounded-pill">{{ Auth::user()->unreadNotifications->count() }}</span>
         </a>
@@ -50,17 +61,18 @@ $empresa = Empresa::first();
                     <span class="dropdown-item text-muted">Sin notificaciones nuevas</span>
                 </li>
             @endforelse
-            <li>
-                <hr class="dropdown-divider">
-            </li>
+            <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item text-center" href="#">Ver todas</a></li>
         </ul>
     </div>
+
     <!-- Navbar-->
     <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
         <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown"
-                aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button"
+                data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-user fa-fw"></i>
+            </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                 @can('ver-perfil')
                     <li><a class="dropdown-item" href="{{ route('profile.index') }}">Configuraciones</a></li>
@@ -68,9 +80,7 @@ $empresa = Empresa::first();
                 @can('ver-registro-actividad')
                     <li><a class="dropdown-item" href="{{ route('activityLog.index') }}">Registro de actividad</a></li>
                 @endcan
-                <li>
-                    <hr class="dropdown-divider" />
-                </li>
+                <li><hr class="dropdown-divider" /></li>
                 <li><a class="dropdown-item" href="{{ route('logout') }}">Cerrar sesión</a></li>
             </ul>
         </li>
