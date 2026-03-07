@@ -134,7 +134,7 @@
                     <p>Ya puedes acceder al sistema con tus credenciales y comenzar a gestionar tu negocio.</p>
                     
                     <div class="button-container">
-                        <a href="{{ route('login.index') }}" class="btn">Entrar al Sistema Oficial</a>
+                        <a href="{{ config('app.url') }}/login" class="btn">Entrar al Sistema</a>
                     </div>
 
                     <div class="divider"></div>

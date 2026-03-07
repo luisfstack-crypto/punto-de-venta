@@ -30,10 +30,6 @@ class UserApproved extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            from: new Address(
-                config('mail.from.address'),
-                config('mail.from.name')
-            ),
             subject: '¡Tu cuenta de ' . config('app.name') . ' ha sido activada!',
         );
     }

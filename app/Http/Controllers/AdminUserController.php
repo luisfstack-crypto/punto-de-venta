@@ -8,6 +8,8 @@ use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use App\Mail\UserApproved;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Spatie\Permission\Models\Role;
 
 class AdminUserController extends Controller
@@ -45,23 +47,30 @@ class AdminUserController extends Controller
      */
     public function approve(Request $request, User $user)
     {
-        // Validar que se reciba un rol válido (excepto administrador para evitar escalado en masa)
         $request->validate([
             'role' => 'required|exists:roles,name|not_in:administrador'
         ]);
 
-        $user->update(['status' => 'active']);
-        
-        // Asignar el rol elegido al usuario
-        $user->assignRole($request->role);
-
         try {
-            // Enviar notificación por correo
-            Mail::to($user->email)->send(new UserApproved($user));
-            $mensaje = 'Usuario aprobado exitosamente y notificado por correo.';
+            Log::info('[Aprobación] Intentando aprobar usuario: ' . $user->email . ' con rol: ' . $request->role);
+            Log::info('[Aprobación] Roles disponibles en DB: ' . Role::all()->pluck('name')->implode(', '));
+
+            DB::transaction(function () use ($user, $request) {
+                $user->update(['status' => 'active']);
+                $user->assignRole($request->role);
+            });
+
+            try {
+                Mail::to($user->email)->send(new UserApproved($user));
+                $mensaje = 'Usuario aprobado exitosamente y notificado por correo.';
+            } catch (\Exception $e) {
+                Log::error('[Aprobación] Error al enviar correo: ' . $e->getMessage());
+                $mensaje = 'Usuario aprobado, pero el correo no pudo enviarse.';
+            }
+
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('[Aprobación] Error al enviar correo a ' . $user->email . ': ' . $e->getMessage());
-            $mensaje = 'Usuario aprobado, pero el correo de notificación no pudo enviarse.';
+            Log::error('[Aprobación] Error crítico: ' . $e->getMessage());
+            return redirect()->back()->withErrors('Error al procesar la aprobación: ' . $e->getMessage());
         }
 
         return redirect()->back()->with('success', $mensaje);
