@@ -8,7 +8,7 @@ $empresa = Empresa::first();
     <!-- Navbar Brand-->
     <a class="navbar-brand ps-3" href="{{ route('panel') }}">
         @if(auth()->user()->logo)
-            <img src="{{ Storage::url(auth()->user()->logo) }}"
+            <img src="{{ auth()->user()->logo }}"
                  alt="Logo"
                  height="30"
                  class="d-inline-block align-text-top me-2"

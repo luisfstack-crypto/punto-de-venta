@@ -54,11 +54,11 @@
 
                             {{-- Preview logo actual --}}
                             @if(auth()->user()->logo)
-                                <img src="{{ Storage::url(auth()->user()->logo) }}"
+                                <img src="{{ auth()->user()->logo }}"
                                      alt="Logo actual"
                                      height="48"
                                      style="border-radius:6px; border:1px solid var(--pv-border); padding:4px; background:var(--pv-card-header);">
-                            @else
+@else
                                 <div style="width:48px;height:48px;border-radius:6px;border:1px dashed var(--pv-border);display:flex;align-items:center;justify-content:center;color:var(--pv-text-muted);">
                                     <i class="fas fa-image"></i>
                                 </div>

@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 use Throwable;
 
 class profileController extends Controller
@@ -47,25 +46,17 @@ class profileController extends Controller
         }
 
         try {
+            $data = collect($request->all())->except(['logo'])->toArray();
+
+           
             if ($request->hasFile('logo')) {
-                if ($profile->logo && Storage::disk('public')->exists($profile->logo)) {
-                    Storage::disk('public')->delete($profile->logo);
-                }
-                $path = $request->file('logo')->storeAs(
-                    'logos',
-                    'logo_user_' . $profile->id . '.' . $request->file('logo')->getClientOriginalExtension(),
-                    'public'
-                );
-                $profile->logo = $path;
+                $file   = $request->file('logo');
+                $mime   = $file->getMimeType();
+                $base64 = base64_encode(file_get_contents($file->getRealPath()));
+                $data['logo'] = 'data:' . $mime . ';base64,' . $base64;
             }
 
-            $profile->update(
-                collect($request->all())->except(['logo'])->toArray()
-            );
-
-            if ($request->hasFile('logo')) {
-                $profile->save();
-            }
+            $profile->update($data);
 
             return redirect()->route('profile.index')->with('success', 'Cambios guardados');
         } catch (Throwable $e) {
