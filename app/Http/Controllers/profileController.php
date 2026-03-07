@@ -36,7 +36,7 @@ class profileController extends Controller
             'name'     => 'required',
             'email'    => 'required|unique:users,email,' . $profile->id,
             'password' => 'nullable',
-            'logo'     => 'nullable|image|mimes:png|max:2048',
+            'logo'     => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
         ]);
 
         // Password
@@ -53,7 +53,7 @@ class profileController extends Controller
                 }
                 $path = $request->file('logo')->storeAs(
                     'logos',
-                    'logo_user_' . $profile->id . '.png',
+                    'logo_user_' . $profile->id . '.' . $request->file('logo')->getClientOriginalExtension(),
                     'public'
                 );
                 $profile->logo = $path;

@@ -49,7 +49,7 @@
 
                     <!----Logo--->
                     <div class="col-12">
-                        <label class="form-label">Logo personal (PNG)</label>
+                        <label class="form-label">Logo personal (PNG, JPG)</label>
                         <div class="d-flex align-items-center gap-3 flex-wrap">
 
                             {{-- Preview logo actual --}}
@@ -68,11 +68,11 @@
                                 <input type="file"
                                        name="logo"
                                        id="logoInput"
-                                       accept=".png"
+                                       accept=".png,.jpg,.jpeg"
                                        class="form-control"
                                        style="max-width:300px;"
                                        onchange="previewLogo(this)">
-                                <small class="text-muted d-block mt-1">Solo PNG · Máx. 2 MB</small>
+                                <small class="text-muted d-block mt-1">Formatos: PNG, JPG o JPEG · Máx. 2 MB</small>
                             </div>
                         </div>
 
