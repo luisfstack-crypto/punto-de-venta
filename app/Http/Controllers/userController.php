@@ -7,12 +7,14 @@ use App\Http\Requests\UpdateUserRequest;
 use App\Models\Empleado;
 use App\Models\User;
 use App\Services\ActivityLogService;
+use App\Mail\UserApproved;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Spatie\Permission\Models\Role;
 use Throwable;
 
@@ -98,14 +100,16 @@ class userController extends Controller
     {
         DB::beginTransaction();
         try {
+            $statusAnterior = $user->status;
 
-            /*Comprobar el password y aplicar el Hash*/
             if (empty($request->password)) {
-                $request = Arr::except($request, array('password'));
+                $datos = Arr::except($request->all(), array('password'));
             } else {
-                $request->merge(['password' => Hash::make($request->password)]);
+                $datos = $request->all();
+                $datos['password'] = Hash::make($request->password);
             }
-            $user->update($request->all());
+            
+            $user->update($datos);
             
             if ($request->filled('role')) {
                 $user->syncRoles([$request->role]);
@@ -114,6 +118,14 @@ class userController extends Controller
             }
 
             DB::commit();
+            if ($statusAnterior !== 'active' && $user->status === 'active') {
+                try {
+                    Mail::to($user->email)->send(new UserApproved($user));
+                } catch (\Exception $e) {
+                    Log::error('[UserUpdate] Error al enviar correo de aprobación: ' . $e->getMessage());
+                }
+            }
+
             ActivityLogService::log('Edición de usuario', 'Usuarios', $request->validated());
             return redirect()->route('users.index')->with('success', 'Usuario editado');
         } catch (Throwable $e) {
