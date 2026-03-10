@@ -105,8 +105,10 @@ class CotizacionController extends Controller
     public function sendEmail(Cotizacion $cotizacion)
     {
         try {
+            $empresa = $this->empresaService->obtenerEmpresa();
+
             Mail::to($cotizacion->cliente->persona->email)
-                ->send(new CotizacionMail($cotizacion));
+                ->send(new CotizacionMail($cotizacion, $empresa));
 
             $cotizacion->update(['enviado_at' => now()]);
 
