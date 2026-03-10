@@ -5,8 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Producto extends Model
@@ -15,58 +13,30 @@ class Producto extends Model
 
     protected $guarded = ['id'];
 
-    public function compras(): BelongsToMany
-    {
-        return $this->belongsToMany(Compra::class)
-            ->withTimestamps()
-            ->withPivot('cantidad', 'precio_compra', 'fecha_vencimiento');
-    }
+    protected $casts = [
+        'facturable' => 'boolean',
+    ];
 
-    public function ventas(): BelongsToMany
-    {
-        return $this->belongsToMany(Venta::class)
-            ->withTimestamps()
-            ->withPivot('cantidad', 'precio_venta');
-    }
+    // ─── Relaciones ───────────────────────────────────────────────────────────
 
-    public function categoria(): BelongsTo
-    {
-        return $this->belongsTo(Categoria::class);
-    }
+    public function categoria(): BelongsTo    { return $this->belongsTo(Categoria::class); }
+    public function marca(): BelongsTo        { return $this->belongsTo(Marca::class); }
+    public function presentacione(): BelongsTo { return $this->belongsTo(Presentacione::class); }
+    public function inventario(): HasOne      { return $this->hasOne(Inventario::class); }
 
-    public function marca(): BelongsTo
-    {
-        return $this->belongsTo(Marca::class);
-    }
+    // ─── Hooks ────────────────────────────────────────────────────────────────
 
-    public function presentacione(): BelongsTo
+    protected static function booted(): void
     {
-        return $this->belongsTo(Presentacione::class);
-    }
-
-    public function inventario(): HasOne
-    {
-        return $this->hasOne(Inventario::class);
-    }
-
-    public function kardex(): HasMany
-    {
-        return $this->hasMany(Kardex::class);
-    }
-
-    protected static function booted()
-    {
-        static::creating(function ($producto) {
-            //Si no se propociona un código, generar uno único
+        static::creating(function (self $producto) {
             if (empty($producto->codigo)) {
                 $producto->codigo = self::generateUniqueCode();
             }
         });
     }
 
-    /**
-     * Genera un código único para el producto
-     */
+    // ─── Helpers privados ─────────────────────────────────────────────────────
+
     private static function generateUniqueCode(): string
     {
         do {
@@ -76,11 +46,24 @@ class Producto extends Model
         return $code;
     }
 
-    /**
-     * Accesor para obtener el código, nombre y presentación del producto
-     */
+    // ─── Accessors ────────────────────────────────────────────────────────────
+
     public function getNombreCompletoAttribute(): string
     {
         return "Código: {$this->codigo} - {$this->nombre} - Presentación: {$this->presentacione->sigla}";
+    }
+
+    /**
+     * Etiqueta de tasa legible para el comprobante fiscal.
+     */
+    public function getTasaLabelAttribute(): string
+    {
+        return match ($this->tasa_cuota) {
+            '0.160000' => 'IVA 16%',
+            '0.080000' => 'IVA 8%',
+            '0.000000' => 'Tasa 0%',
+            'Exento'   => 'Exento',
+            default    => $this->tasa_cuota ?? '—',
+        };
     }
 }
