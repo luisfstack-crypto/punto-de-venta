@@ -27,11 +27,18 @@ class StoreVentaRequest extends FormRequest
             'cliente_id' => 'required|exists:clientes,id',
             'comprobante_id' => 'required|exists:comprobantes,id',
             'metodo_pago' => ['required', new Enum(MetodoPagoEnum::class)],
-            'subtotal' => 'required|min:1',
+            'subtotal' => 'required|numeric',
             'impuesto' => 'required|numeric',
             'total' => 'required|numeric',
-            'monto_recibido' => 'required|numeric|min:1',
-            'vuelto_entregado' => 'required|numeric|min:0'
+            'monto_recibido' => 'required|numeric|min:0',
+            'vuelto_entregado' => 'required|numeric|min:0',
+            'aplicar_iva' => 'nullable|boolean',
+            'descuento_global' => 'nullable|numeric|min:0|max:100',
+            'arrayidproducto' => 'required|array',
+            'arraycantidad' => 'required|array',
+            'arrayprecioventa' => 'required|array',
+            'arraydescuento' => 'nullable|array',
+            'arraydescripcion' => 'nullable|array',
         ];
     }
 }

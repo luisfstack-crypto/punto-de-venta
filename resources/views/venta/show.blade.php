@@ -51,9 +51,10 @@
                 <thead class="bg-primary text-white">
                     <tr class="align-top">
                         <th class="text-white">Producto</th>
-                        <th class="text-white">Presentación</th>
+                        <th class="text-white">Descripción</th>
                         <th class="text-white">Cantidad</th>
-                        <th class="text-white">Precio de venta</th>
+                        <th class="text-white">Precio Unit.</th>
+                        <th class="text-white">Desc.</th>
                         <th class="text-white">Subtotal</th>
                     </tr>
                 </thead>
@@ -64,7 +65,7 @@
                             {{$item->nombre}}
                         </td>
                         <td>
-                            {{$item->presentacione->sigla}}
+                            {{$item->pivot->descripcion ?? '---'}}
                         </td>
                         <td>
                             {{$item->pivot->cantidad}}
@@ -72,8 +73,11 @@
                         <td>
                             {{$item->pivot->precio_venta}}
                         </td>
+                        <td>
+                            {{$item->pivot->descuento}}%
+                        </td>
                         <td class="td-subtotal">
-                            {{($item->pivot->cantidad) * ($item->pivot->precio_venta)}}
+                            {{ number_format(($item->pivot->cantidad * $item->pivot->precio_venta) * (1 - ($item->pivot->descuento / 100)), 2) }}
                         </td>
                     </tr>
                     @endforeach
@@ -83,19 +87,27 @@
                         <th colspan="5"></th>
                     </tr>
                     <tr>
-                        <th colspan="4">Sumas:</th>
+                        <th colspan="5">Sumas iniciales:</th>
                         <th>
                             {{$venta->subtotal}} {{$empresa->moneda->simbolo}}
                         </th>
                     </tr>
+                    @if($venta->descuento_global > 0)
                     <tr>
-                        <th colspan="4">{{$empresa->abreviatura_impuesto}} ({{$empresa->porcentaje_impuesto}}%):</th>
+                        <th colspan="5">Descuento Global ({{$venta->descuento_global}}%):</th>
+                        <th>
+                            - {{ number_format($venta->subtotal * ($venta->descuento_global / 100), 2) }} {{$empresa->moneda->simbolo}}
+                        </th>
+                    </tr>
+                    @endif
+                    <tr>
+                        <th colspan="5">{{$empresa->abreviatura_impuesto}} ({{$venta->aplicar_iva ? $empresa->porcentaje_impuesto : 0}}%):</th>
                         <th>
                             {{$venta->impuesto}} {{$empresa->moneda->simbolo}}
                         </th>
                     </tr>
                     <tr>
-                        <th colspan="4">Total:</th>
+                        <th colspan="5">Total:</th>
                         <th>
                             {{$venta->total}} {{$empresa->moneda->simbolo}}
                         </th>

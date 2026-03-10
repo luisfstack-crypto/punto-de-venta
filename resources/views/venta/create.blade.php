@@ -69,19 +69,29 @@
 
                         <!--Método de pago-->
                         <div class="col-md-6">
-                            <label for="metodo_pago" class="form-label">
-                                Método de pago:</label>
-                            <select required name="metodo_pago"
-                                id="metodo_pago"
-                                class="form-control selectpicker"
-                                title="Selecciona">
+                            <label for="metodo_pago" class="form-label">Método de pago:</label>
+                            <select required name="metodo_pago" id="metodo_pago" class="form-control selectpicker" title="Selecciona">
                                 @foreach ($optionsMetodoPago as $item)
-                                <option value="{{$item->value}}">{{$item->name}}</option>
+                                <option value="{{$item->value}}" {{ old('metodo_pago') == $item->value ? 'selected' : '' }}>{{$item->name}}</option>
                                 @endforeach
                             </select>
                             @error('metodo_pago')
                             <small class="text-danger">{{ '*'.$message }}</small>
                             @enderror
+                        </div>
+
+                        <!--IVA y Descuento Global-->
+                        <div class="col-md-6">
+                            <label class="form-label">¿Aplicar IVA?</label>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" name="aplicar_iva" id="aplicar_iva" value="1" {{ old('aplicar_iva', '1') == '1' ? 'checked' : '' }}>
+                                <label class="form-check-label" for="aplicar_iva">Sí ({{$empresa->porcentaje_impuesto}}%)</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="descuento_global" class="form-label">Descuento Global (%):</label>
+                            <input type="number" name="descuento_global" id="descuento_global" class="form-control" value="{{ old('descuento_global', 0) }}" step="any" min="0" max="100">
                         </div>
                     </div>
                 </div>
@@ -139,11 +149,20 @@
                         </div>
 
                         <!-----Cantidad---->
-                        <div class="col-md-6">
-                            <label for="cantidad" class="form-label">
-                                Cantidad:</label>
-                            <input type="number" id="cantidad"
-                                class="form-control">
+                        <div class="col-md-4">
+                            <label for="cantidad" class="form-label">Cantidad:</label>
+                            <input type="number" id="cantidad" class="form-control" min="1">
+                        </div>
+
+                        <!-----Detalle del producto---->
+                        <div class="col-md-5">
+                            <label for="descripcion_p" class="form-label">Descripción personalizada:</label>
+                            <input type="text" id="descripcion_p" class="form-control" placeholder="Ej. Medidas, color, etc.">
+                        </div>
+
+                        <div class="col-md-3">
+                            <label for="descuento_p" class="form-label">Descuento (%):</label>
+                            <input type="number" id="descuento_p" class="form-control" value="0" step="any" min="0" max="100">
                         </div>
 
                         <!-----botón para agregar--->
@@ -159,9 +178,10 @@
                                     <thead class="bg-primary">
                                         <tr>
                                             <th class="text-white">Producto</th>
-                                            <th class="text-white">Presentación</th>
+                                            <th class="text-white">Descripción</th>
                                             <th class="text-white">Cantidad</th>
                                             <th class="text-white">Precio</th>
+                                            <th class="text-white">Desc.</th>
                                             <th class="text-white">Subtotal</th>
                                             <th></th>
                                         </tr>
@@ -302,6 +322,9 @@
             cancelarVenta();
         });
 
+        $('#aplicar_iva').change(calcularTotales);
+        $('#descuento_global').on('input', calcularTotales);
+
         disableButtons();
 
         $('#dinero_recibido').on('input', function() {
@@ -339,96 +362,86 @@
         //Obtener valores de los campos
         let idProducto = dataProducto[0];
         let nameProducto = dataProducto[3];
-        let presentacioneProducto = dataProducto[4];
         let cantidad = $('#cantidad').val();
         let precioVenta = $('#precio').val();
         let stock = $('#stock').val();
+        let descripcion = $('#descripcion_p').val();
+        let descuento = $('#descuento_p').val() || 0;
 
         //Validaciones 
-        //1.Para que los campos no esten vacíos
         if (idProducto != '' && cantidad != '') {
-
-            //2. Para que los valores ingresados sean los correctos
-            if (parseInt(cantidad) > 0 && (cantidad % 1 == 0)) {
-
-                //3. Para que la cantidad no supere el stock
-                if (parseInt(cantidad) <= parseInt(stock)) {
-
-                    //4.No permitir el ingreso del mismo producto 
+            if (parseFloat(cantidad) > 0) {
+                if (parseFloat(cantidad) <= parseFloat(stock)) {
                     if (!arrayIdProductos.includes(idProducto)) {
-
-                        //Calcular valores
-                        subtotal[cont] = round(cantidad * precioVenta);
-                        sumas = round(sumas + subtotal[cont]);
-                        igv = round(sumas / 100 * impuesto);
-                        total = round(sumas + igv);
+                        let sub = round(cantidad * precioVenta * (1 - descuento / 100));
+                        subtotal[cont] = sub;
 
                         //Crear la fila
                         let fila = '<tr id="fila' + cont + '">' +
                             '<td><input type="hidden" name="arrayidproducto[]" value="' + idProducto + '">' + nameProducto + '</td>' +
-                            '<td>' + presentacioneProducto + '</td>' +
+                            '<td><input type="hidden" name="arraydescripcion[]" value="' + descripcion + '">' + (descripcion || '---') + '</td>' +
                             '<td><input type="hidden" name="arraycantidad[]" value="' + cantidad + '">' + cantidad + '</td>' +
                             '<td><input type="hidden" name="arrayprecioventa[]" value="' + precioVenta + '">' + precioVenta + '</td>' +
+                            '<td><input type="hidden" name="arraydescuento[]" value="' + descuento + '">' + descuento + '%</td>' +
                             '<td>' + subtotal[cont] + '</td>' +
                             '<td><button class="btn btn-danger" type="button" onClick="eliminarProducto(' + cont + ',' + idProducto + ')"><i class="fa-solid fa-trash"></i></button></td>' +
                             '</tr>';
 
-                        //Acciones después de añadir la fila
                         $('#tabla_detalle').append(fila);
                         limpiarCampos();
                         cont++;
-                        disableButtons();
-
-                        //Mostrar los campos calculados
-                        $('#sumas').html(sumas);
-                        $('#igv').html(igv);
-                        $('#total').html(total);
-                        $('#inputImpuesto').val(igv);
-                        $('#inputTotal').val(total);
-                        $('#inputSubtotal').val(sumas);
-
-                        //Agregar el id del producto al arreglo
+                        calcularTotales();
                         arrayIdProductos.push(idProducto);
                     } else {
                         showModal('Ya ha ingresado el producto');
                     }
-
                 } else {
-                    showModal('Cantidad incorrecta');
+                    showModal('No hay stock suficiente');
                 }
-
             } else {
-                showModal('Valores incorrectos');
+                showModal('Cantidad inválida');
             }
-
         } else {
             showModal('Le faltan campos por llenar');
         }
-
     }
 
-    function eliminarProducto(indice, idProducto) {
-        //Calcular valores
-        sumas -= round(subtotal[indice]);
-        igv = round(sumas / 100 * impuesto);
-        total = round(sumas + igv);
+    function calcularTotales() {
+        sumas = 0;
+        for (let i = 0; i < subtotal.length; i++) {
+            if (subtotal[i] !== undefined) {
+                sumas += subtotal[i];
+            }
+        }
+        sumas = round(sumas);
 
-        //Mostrar los campos calculados
+        let descGlobal = parseFloat($('#descuento_global').val()) || 0;
+        let sumasConDesc = round(sumas * (1 - descGlobal / 100));
+        
+        if (sumasConDesc < 0) sumasConDesc = 0;
+
+        let aplicandoIva = $('#aplicar_iva').is(':checked');
+        igv = aplicandoIva ? round(sumasConDesc * (impuesto / 100)) : 0;
+        
+        total = round(sumasConDesc + igv);
+
         $('#sumas').html(sumas);
         $('#igv').html(igv);
         $('#total').html(total);
+        
         $('#inputImpuesto').val(igv);
         $('#inputTotal').val(total);
         $('#inputSubtotal').val(sumas);
+        
+        disableButtons();
+    }
 
-        //Eliminar el fila de la tabla
+    function eliminarProducto(indice, idProducto) {
+        delete subtotal[indice];
+        calcularTotales();
         $('#fila' + indice).remove();
-
-        //Eliminar id del arreglo
         let index = arrayIdProductos.indexOf(idProducto.toString());
         arrayIdProductos.splice(index, 1);
-
-        disableButtons();
     }
 
     function cancelarVenta() {
@@ -477,11 +490,12 @@
     }
 
     function limpiarCampos() {
-        let select = $('#producto_id');
-        select.selectpicker('val', '');
+        $('#producto_id').selectpicker('val', '');
         $('#cantidad').val('');
         $('#precio').val('');
         $('#stock').val('');
+        $('#descripcion_p').val('');
+        $('#descuento_p').val('0');
     }
 
     function showModal(message, icon = 'error') {
@@ -521,18 +535,21 @@
     // Load Cotizacion if exists
     const cotizacion = @json($cotizacion ?? null);
     if (cotizacion) {
-        $(document).ready(function() {
-            // Set Client
-            if (cotizacion.cliente_id) {
-                $('#cliente_id').val(cotizacion.cliente_id);
-                $('#cliente_id').selectpicker('refresh');
+            // Set IVA and Global Discount
+            if (cotizacion.aplicar_iva) {
+                $('#aplicar_iva').prop('checked', true);
+            } else {
+                $('#aplicar_iva').prop('checked', false);
             }
+            $('#descuento_global').val(cotizacion.descuento_global || 0);
 
             // Loop products
             cotizacion.productos.forEach(producto => {
                 let id = producto.id;
                 let cantidad = producto.pivot.cantidad;
                 let precio = producto.pivot.precio;
+                let descripcion = producto.pivot.descripcion;
+                let descuento = producto.pivot.descuento;
 
                 // Find option in select
                 let options = document.getElementById('producto_id').options;
@@ -546,12 +563,15 @@
                         // Override values
                         $('#cantidad').val(cantidad);
                         $('#precio').val(precio); // Use quoted price
+                        $('#descripcion_p').val(descripcion);
+                        $('#descuento_p').val(descuento);
 
                         agregarProducto();
                         break;
                     }
                 }
             });
+            calcularTotales();
         });
     }
 </script>

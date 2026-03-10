@@ -28,7 +28,21 @@ class CotizacionController extends Controller
     public function index()
     {
         $cotizaciones = Cotizacion::with(['cliente.persona', 'user'])->latest()->get();
-        return view('cotizacion.index', compact('cotizaciones'));
+
+        $stats = [
+            'total_sent'      => $cotizaciones->whereNotNull('enviado_at')->count(),
+            'amount_sent'     => $cotizaciones->whereNotNull('enviado_at')->sum('total'),
+            'total_pending'   => $cotizaciones->where('estado', 1)->count(),
+            'amount_pending'  => $cotizaciones->where('estado', 1)->sum('total'),
+            'total_expired'   => $cotizaciones->where('estado', 1)->where('fecha_validez', '<', now()->format('Y-m-d'))->count(),
+            'amount_expired'  => $cotizaciones->where('estado', 1)->where('fecha_validez', '<', now()->format('Y-m-d'))->sum('total'),
+            'total_approved'  => $cotizaciones->where('estado', 2)->count(),
+            'amount_approved' => $cotizaciones->where('estado', 2)->sum('total'),
+            'total_rejected'  => $cotizaciones->where('estado', 3)->count(),
+            'amount_rejected' => $cotizaciones->where('estado', 3)->sum('total'),
+        ];
+
+        return view('cotizacion.index', compact('cotizaciones', 'stats'));
     }
 
     public function create()
