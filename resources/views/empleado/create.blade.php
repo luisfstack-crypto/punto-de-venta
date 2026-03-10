@@ -1,63 +1,171 @@
 @extends('layouts.app')
+@section('title', 'Nuevo Empleado')
 
-@section('title','Crear empleado')
+@push('styles')
+<style>
+    :root {
+        --pv-blue:    #3B82F6;
+        --pv-indigo:  #6366F1;
+        --pv-green:   #10B981;
+        --pv-dark:    #0E1117;
+        --pv-card-bg: #ffffff;
+        --pv-border:  #E4E7EF;
+        --pv-text:    #1e293b;
+        --pv-muted:   #64748b;
+    }
 
-@push('css')
+    body { font-family: 'DM Sans', sans-serif; background: #f8fafc; }
+
+    .pv-page-header {
+        display: flex; align-items: center; gap: 12px; margin-bottom: 28px;
+    }
+    .pv-page-header a {
+        width: 36px; height: 36px; border-radius: 8px;
+        border: 1px solid var(--pv-border); background: #fff;
+        display: flex; align-items: center; justify-content: center;
+        color: var(--pv-muted); text-decoration: none; transition: all .15s;
+    }
+    .pv-page-header a:hover { border-color: var(--pv-blue); color: var(--pv-blue); }
+    .pv-page-header h2 {
+        margin: 0; font-family: 'Syne', sans-serif;
+        font-size: 1.35rem; font-weight: 700; color: var(--pv-dark);
+    }
+
+    .pv-card { background: var(--pv-card-bg); border-radius: 12px; border: 1px solid var(--pv-border); overflow: hidden; margin-bottom: 20px; }
+    .pv-card-header { background: var(--pv-dark); padding: 14px 22px; display: flex; align-items: center; gap: 12px; }
+    .pv-card-header-num {
+        width: 28px; height: 28px; border-radius: 50%;
+        background: linear-gradient(135deg, #3B82F6, #6366F1);
+        color: #fff; font-family: 'Syne', sans-serif;
+        font-size: .8rem; font-weight: 700;
+        display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .pv-card-header-title { font-family: 'Syne', sans-serif; font-size: .9rem; font-weight: 600; color: rgba(255,255,255,.9); margin: 0; }
+    .pv-card-body { padding: 22px; }
+
+    .pv-field { border: 1.5px solid var(--pv-border); border-radius: 10px; overflow: hidden; transition: border-color .15s; background: #fff; }
+    .pv-field:focus-within { border-color: var(--pv-blue); }
+    .pv-field label {
+        display: block; font-family: 'Syne', sans-serif;
+        font-size: .65rem; font-weight: 700;
+        letter-spacing: .06em; text-transform: uppercase;
+        color: var(--pv-muted); padding: 8px 14px 0; margin: 0; cursor: text;
+    }
+    .pv-field input,
+    .pv-field select,
+    .pv-field textarea {
+        display: block; width: 100%; border: none !important; outline: none !important;
+        box-shadow: none !important; padding: 3px 14px 9px;
+        font-family: 'DM Sans', sans-serif; font-size: .9rem;
+        color: var(--pv-text); background: transparent;
+    }
+    .pv-field.is-invalid { border-color: #ef4444; }
+    .invalid-feedback { font-size: .8rem; color: #ef4444; margin-top: 4px; display: block; }
+
+    .btn-pv-save {
+        background: linear-gradient(135deg, #10B981, #059669);
+        color: #fff; border: none; border-radius: 10px;
+        padding: 11px 32px; font-family: 'Syne', sans-serif;
+        font-weight: 700; font-size: .88rem; letter-spacing: .03em;
+        transition: opacity .15s, transform .1s; cursor: pointer;
+    }
+    .btn-pv-save:hover { opacity: .9; transform: translateY(-1px); color: #fff; }
+    .btn-pv-cancel {
+        background: transparent; color: var(--pv-muted);
+        border: 1.5px solid var(--pv-border); border-radius: 10px;
+        padding: 10px 22px; font-family: 'Syne', sans-serif;
+        font-weight: 600; font-size: .88rem; transition: all .15s; cursor: pointer; text-decoration: none;
+        display: inline-flex; align-items: center;
+    }
+    .btn-pv-cancel:hover { border-color: var(--pv-muted); color: var(--pv-text); }
+
+    .pv-form-footer {
+        display: flex; justify-content: flex-end; align-items: center; gap: 12px;
+        padding: 18px 22px; border-top: 1px solid var(--pv-border); background: #f8fafc;
+    }
+
+    /* Imagen previsualización */
+    .pv-img-upload {
+        border: 2px dashed var(--pv-border); border-radius: 12px;
+        padding: 24px; text-align: center; cursor: pointer;
+        transition: border-color .2s; position: relative;
+        background: #fafafa;
+    }
+    .pv-img-upload:hover { border-color: var(--pv-blue); }
+    .pv-img-upload input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+    .pv-img-upload-label { font-family: 'Syne', sans-serif; font-size: .85rem; font-weight: 600; color: var(--pv-muted); }
+    .pv-img-upload-sub   { font-size: .75rem; color: var(--pv-muted); margin-top: 4px; }
+    #img-preview { max-width: 100%; max-height: 140px; border-radius: 8px; display: none; margin: 12px auto 0; }
+    #img-default { max-width: 100%; max-height: 140px; border-radius: 8px; margin: 12px auto 0; opacity: 0.5; }
+</style>
 @endpush
 
 @section('content')
-<div class="container-fluid px-4">
-    <h1 class="mt-4 text-center">Crear Empleado</h1>
+<div class="container-fluid px-4 py-4">
 
-    <x-breadcrumb.template>
-        <x-breadcrumb.item :href="route('panel')" content="Inicio" />
-        <x-breadcrumb.item :href="route('empleados.index')" content="Empleados" />
-        <x-breadcrumb.item active='true' content="Crear empleado" />
-    </x-breadcrumb.template>
+    <div class="pv-page-header">
+        <a href="{{ route('empleados.index') }}" title="Volver">&#8592;</a>
+        <h2>Nuevo Empleado</h2>
+    </div>
 
-    <x-forms.template :action="route('empleados.store')" method='post' file='true'>
+    <form action="{{ route('empleados.store') }}" method="POST" enctype="multipart/form-data">
+        @csrf
 
-        <div class="row g-4">
-
-            <div class="col-md-6">
-                <x-forms.input id="razon_social" required='true' labelText='Nombres y Apellidos' />
+        <div class="pv-card">
+            <div class="pv-card-header">
+                <div class="pv-card-header-num">1</div>
+                <p class="pv-card-header-title">Datos Personales y Cargo</p>
             </div>
+            <div class="pv-card-body">
+                <div class="row g-4">
+                    {{-- Nombre --}}
+                    <div class="col-md-7">
+                        <div class="pv-field @error('razon_social') is-invalid @enderror">
+                            <label for="razon_social">Nombres y Apellidos *</label>
+                            <input type="text" id="razon_social" name="razon_social"
+                                   value="{{ old('razon_social') }}" placeholder="Nombre completo del empleado">
+                        </div>
+                        @error('razon_social')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
 
-            <div class="col-md-6">
-                <x-forms.input id="cargo" required='true' />
+                    {{-- Cargo --}}
+                    <div class="col-md-5">
+                        <div class="pv-field @error('cargo') is-invalid @enderror">
+                            <label for="cargo">Cargo / Puesto *</label>
+                            <input type="text" id="cargo" name="cargo"
+                                   value="{{ old('cargo') }}" placeholder="Ej: Administrador, Vendedor...">
+                        </div>
+                        @error('cargo')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+
+                    {{-- Foto --}}
+                    <div class="col-md-12 text-center">
+                        <p class="pv-section-label" style="text-align: left; margin-bottom: 8px;">Fotografía del empleado</p>
+                        <div class="pv-img-upload">
+                            <input type="file" name="img" id="img" accept="image/*">
+                            <div class="pv-img-upload-label">Seleccionar fotografía</div>
+                            <div class="pv-img-upload-sub">Formatos recomendados: JPG, PNG o WEBP</div>
+                            
+                            <img id="img-default" src="{{ asset('assets/img/paisaje.png') }}" alt="Por defecto">
+                            <img id="img-preview" src="" alt="Vista previa">
+                        </div>
+                        @error('img')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+                </div>
             </div>
-
-            <div class="col-md-6">
-                <x-forms.input id="img" type='file' labelText='Seleccione una imagen'/>
-            </div>
-
-            <div class="col-md-6">
-                <p>Imagen seleccionada:</p>
-
-                <img id="img-default"
-                    class="img-fluid"
-                    src="{{ asset('assets/img/paisaje.png') }}"
-                    alt="Imagen por defecto">
-
-                <img src="" alt="Ha cargado un archivo no compatible"
-                    id="img-preview"
-                    class="img-fluid img-thumbnail" style="display: none;">
-            </div>
-
-
         </div>
 
-        <x-slot name='footer'>
-            <button type="submit" class="btn btn-primary">Guardar</button>
-        </x-slot>
+        {{-- Pie del formulario --}}
+        <div class="pv-form-footer pv-card" style="margin-top:-1px; border-top: none;">
+            <a href="{{ route('empleados.index') }}" class="btn-pv-cancel">Cancelar</a>
+            <button type="submit" class="btn-pv-save">Guardar empleado</button>
+        </div>
 
-    </x-forms.template>
-
-
+    </form>
 </div>
 @endsection
 
-@push('js')
+@push('scripts')
 <script>
     const inputImagen = document.getElementById('img');
     const imagenPreview = document.getElementById('img-preview');
