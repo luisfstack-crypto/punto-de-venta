@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Str;
 
 class Cotizacion extends Model
 {
@@ -15,6 +16,13 @@ class Cotizacion extends Model
     protected $table = 'cotizaciones';
     protected $guarded = ['id'];
     protected $dates = ['fecha_hora', 'fecha_validez', 'enviado_at'];
+
+    protected static function booted(): void
+    {
+        static::creating(function (Cotizacion $cotizacion) {
+            $cotizacion->token_publico = Str::random(40);
+        });
+    }
 
     public function cliente(): BelongsTo
     {
@@ -35,7 +43,7 @@ class Cotizacion extends Model
     {
         return $this->belongsToMany(Producto::class, 'cotizacion_producto')
             ->withTimestamps()
-            ->withPivot('cantidad', 'precio', 'descuento');
+            ->withPivot('cantidad', 'precio', 'descuento', 'descripcion');
     }
 
     public function getFechaAttribute(): string
@@ -46,5 +54,17 @@ class Cotizacion extends Model
     public function getHoraAttribute(): string
     {
         return Carbon::parse($this->fecha_hora)->format('H:i');
+    }
+
+    public function getSubtotalAttribute(): float
+    {
+        return $this->productos->sum(fn($p) =>
+            $p->pivot->cantidad * $p->pivot->precio * (1 - ($p->pivot->descuento ?? 0) / 100)
+        );
+    }
+
+    public function getUrlPublicaAttribute(): string
+    {
+        return route('cotizaciones.publica', $this->token_publico);
     }
 }

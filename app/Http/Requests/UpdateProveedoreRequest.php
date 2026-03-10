@@ -24,11 +24,16 @@ class UpdateProveedoreRequest extends FormRequest
         $proveedore = $this->route('proveedore');
         return [
             'razon_social' => 'required|max:255',
+            'nombre_contacto' => 'nullable|max:255',
             'direccion' => 'nullable|max:255',
             'telefono' => 'nullable|max:15',
             'email' => 'nullable|max:255|email',
             'documento_id' => 'required|integer|exists:documentos,id',
-            'numero_documento' => 'required|max:20|unique:personas,numero_documento,'.$proveedore->persona->id
+            'numero_documento' => 'required|max:20|unique:personas,numero_documento,'.$proveedore->persona->id,
+            'rfc' => 'nullable|max:20',
+            'regimen_fiscal' => 'nullable|max:255',
+            'uso_cfdi' => 'nullable|max:255',
+            'requiere_factura' => 'nullable|boolean',
         ];
     }
 }

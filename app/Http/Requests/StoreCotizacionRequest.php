@@ -18,9 +18,14 @@ class StoreCotizacionRequest extends FormRequest
             'fecha_validez' => 'required|date|after_or_equal:today',
             'impuesto' => 'required|numeric',
             'total' => 'required|numeric',
+            'aplicar_iva' => 'required|boolean',
+            'descuento_global' => 'required|numeric|min:0',
+            'observaciones' => 'nullable|string|max:1000',
             'arrayidproducto' => 'required|array',
             'arraycantidad' => 'required|array',
             'arrayprecioventa' => 'required|array',
+            'arraydescuento' => 'required|array',
+            'arraydescripcion' => 'required|array',
         ];
     }
 }

@@ -315,7 +315,7 @@
             </div>
             @endif
 
-            <form action="{{ route('login.login') }}" method="post">
+            <form action="{{ route('login.login', request()->query()) }}" method="post">
                 @csrf
                 <div class="field">
                     <label>Correo electrónico</label>

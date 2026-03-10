@@ -34,6 +34,11 @@ class loginController extends Controller
         $user = Auth::getProvider()->retrieveByCredentials($request->only('email', 'password'));
         Auth::login($user);
 
+        // Después de login exitoso, redirigir al URL original si viene en query param
+        if ($request->has('redirect')) {
+            return redirect($request->query('redirect'))->with('login', 'Bienvenido ' . $user->name);
+        }
+
         return redirect()->route('panel')->with('login', 'Bienvenido ' . $user->name);
     }
 }

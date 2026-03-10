@@ -47,6 +47,10 @@ Route::post('/login', [loginController::class, 'login'])->name('login.login');
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register.index');
 Route::post('/register', [RegisterController::class, 'register'])->name('register.register');
 
+// Public Quotation Routes
+Route::get('/cotizacion/ver/{token}', [CotizacionController::class, 'publica'])->name('cotizaciones.publica');
+Route::post('/cotizacion/responder/{token}', [CotizacionController::class, 'responder'])->name('cotizaciones.responder');
+
 // Ruta temporal para ejecutar migraciones y seeders en Railway
 Route::get('/setup-railway-db', function () {
     try {
