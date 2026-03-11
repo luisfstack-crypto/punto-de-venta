@@ -19,8 +19,10 @@ class Cotizacion extends Model
 
     protected static function booted(): void
     {
-        static::creating(function (Cotizacion $cotizacion) {
-            $cotizacion->token_publico = Str::random(40);
+        static::creating(function (self $cotizacion) {
+            if (empty($cotizacion->token_publico)) {
+                $cotizacion->token_publico = \Illuminate\Support\Str::uuid();
+            }
         });
     }
 
