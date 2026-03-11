@@ -57,6 +57,31 @@
                 <x-forms.input id="ubicacion" :defaultValue='$empresa->ubicacion' />
             </div>
 
+            <div class="col-12 mt-4">
+                <h5 class="border-bottom pb-2">Configuración SMTP (Envío de correos)</h5>
+                <p class="text-muted small mb-3">Si configuras estos datos, el sistema enviará correos (ej. cotizaciones) utilizando tu propia cuenta.</p>
+            </div>
+
+            <div class="col-md-3">
+                <x-forms.input id="mail_username" labelText="Email / Usuario SMTP" :defaultValue='$empresa->mail_username' type='email' />
+            </div>
+
+            <div class="col-md-3">
+                <x-forms.input id="mail_password" labelText="Contraseña SMTP" :defaultValue='$empresa->mail_password' type='password' />
+            </div>
+
+            <div class="col-md-3">
+                <x-forms.input id="mail_host" labelText="Servidor SMTP" :defaultValue='$empresa->mail_host' />
+            </div>
+
+            <div class="col-md-3">
+                <x-forms.input id="mail_port" labelText="Puerto SMTP" :defaultValue='$empresa->mail_port' />
+            </div>
+
+            <div class="col-12 mt-4">
+                <h5 class="border-bottom pb-2">Ajustes Adicionales</h5>
+            </div>
+
             <div class="col-12">
                 <label for="moneda_id" class="form-label">Moneda seleccionada:</label>
                 <select name="moneda_id" id="moneda_id" class="form-select">

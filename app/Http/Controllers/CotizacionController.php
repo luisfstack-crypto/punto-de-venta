@@ -107,6 +107,18 @@ class CotizacionController extends Controller
         try {
             $empresa = $this->empresaService->obtenerEmpresa();
 
+            \Illuminate\Support\Facades\Config::set('mail.from.name', $empresa->nombre ?? 'Punto de Venta');
+
+            if ($empresa->mail_host && $empresa->mail_username && $empresa->mail_password) {
+                \Illuminate\Support\Facades\Config::set('mail.mailers.smtp.host', $empresa->mail_host);
+                \Illuminate\Support\Facades\Config::set('mail.mailers.smtp.port', $empresa->mail_port ?? 587);
+                \Illuminate\Support\Facades\Config::set('mail.mailers.smtp.username', $empresa->mail_username);
+                \Illuminate\Support\Facades\Config::set('mail.mailers.smtp.password', $empresa->mail_password);
+                \Illuminate\Support\Facades\Config::set('mail.from.address', $empresa->mail_username);
+            }
+
+            app()->forgetInstances();
+            
             Mail::to($cotizacion->cliente->persona->email)
                 ->send(new CotizacionMail($cotizacion, $empresa));
 

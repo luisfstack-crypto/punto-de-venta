@@ -23,6 +23,13 @@ class ProductoService
             'marca_id' => $data['marca_id'],
             'categoria_id' => $data['categoria_id'],
             'presentacione_id' => $data['presentacione_id'],
+            'precio' => $data['precio'] ?? 0,
+            'facturable' => $data['facturable'] ?? false,
+            'clave_producto_sat' => $data['clave_producto_sat'] ?? null,
+            'codigo_interno' => $data['codigo_interno'] ?? null,
+            'tasa_cuota' => $data['tasa_cuota'] ?? null,
+            'unidad_medida' => $data['unidad_medida'] ?? null,
+            'clave_unidad_sat' => $data['clave_unidad_sat'] ?? null,
         ]);
 
         return $producto;
@@ -44,6 +51,13 @@ class ProductoService
             'marca_id' => $data['marca_id'],
             'categoria_id' => $data['categoria_id'],
             'presentacione_id' => $data['presentacione_id'],
+            'precio' => $data['precio'] ?? 0,
+            'facturable' => $data['facturable'] ?? false,
+            'clave_producto_sat' => $data['clave_producto_sat'] ?? null,
+            'codigo_interno' => $data['codigo_interno'] ?? null,
+            'tasa_cuota' => $data['tasa_cuota'] ?? null,
+            'unidad_medida' => $data['unidad_medida'] ?? null,
+            'clave_unidad_sat' => $data['clave_unidad_sat'] ?? null,
         ]);
 
         return $producto;

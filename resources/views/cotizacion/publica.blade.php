@@ -239,11 +239,6 @@
         @endif
 
         {{-- ════ LÓGICA DE ACCIÓN ════ --}}
-        @php
-            $esElCliente = auth()->check()
-                && auth()->user()->email === ($cotizacion->cliente->persona->email ?? null);
-        @endphp
-
         @if($cotizacion->estado == 2)
             <div class="estado-final">
                 <div class="icon">✅</div>
@@ -265,10 +260,10 @@
                 <p>Esta cotización ya no está vigente. Solicita al agente que renueve la fecha de validez.</p>
             </div>
 
-        @elseif($esElCliente)
-            {{-- Usuario autenticado y es el cliente correcto --}}
+        @else
+            {{-- Usuario puede aceptar o rechazar públicamente --}}
             <div class="decision-section">
-                <p class="welcome">Hola, <strong>{{ auth()->user()->name }}</strong> — por favor confirma tu respuesta.</p>
+                <p class="welcome">Hola, al presionar uno de los botones — confirmas tu respuesta a la cotización.</p>
                 <p>Una vez respondida no podrás cambiarla desde aquí.</p>
                 <div class="decision-btns">
                     <form action="{{ route('cotizaciones.responder', $cotizacion->token_publico) }}" method="POST" style="display:contents;">
@@ -287,28 +282,6 @@
                         </button>
                     </form>
                 </div>
-            </div>
-
-        @elseif(auth()->check())
-            {{-- Autenticado pero no es el cliente de esta cotización --}}
-            <div class="login-prompt">
-                <div class="alert alert-warning" style="margin: 0 0 1rem 0; display:inline-block; text-align:left;">
-                    <i class="fas fa-triangle-exclamation"></i>
-                    La sesión activa no corresponde al destinatario de esta cotización.
-                </div>
-                <p>Si eres el destinatario, inicia sesión con <strong>{{ $cotizacion->cliente->persona->email }}</strong>.</p>
-            </div>
-
-        @else
-            {{-- No autenticado --}}
-            <div class="login-prompt">
-                <p>
-                    <i class="fas fa-lock" style="color:#6366F1; margin-right:6px;"></i>
-                    Para aceptar o rechazar esta cotización debes iniciar sesión con tu cuenta.
-                </p>
-                <a href="{{ route('login') }}?redirect={{ urlencode(request()->fullUrl()) }}" class="btn-login">
-                    <i class="fas fa-right-to-bracket"></i> Iniciar sesión
-                </a>
             </div>
         @endif
 

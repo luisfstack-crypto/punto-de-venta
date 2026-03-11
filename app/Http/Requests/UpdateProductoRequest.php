@@ -29,7 +29,14 @@ class UpdateProductoRequest extends FormRequest
             'img_path' => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
             'marca_id' => 'nullable|integer|exists:marcas,id',
             'presentacione_id' => 'required|integer|exists:presentaciones,id',
-            'categoria_id' => 'nullable|integer|exists:categorias,id'
+            'categoria_id' => 'nullable|integer|exists:categorias,id',
+            'precio' => 'required|numeric|min:0',
+            'facturable' => 'nullable|boolean',
+            'clave_producto_sat' => 'required_if:facturable,1|nullable|string|max:20',
+            'codigo_interno' => 'nullable|string|max:50',
+            'tasa_cuota' => 'required_if:facturable,1|nullable|string|max:50',
+            'unidad_medida' => 'required_if:facturable,1|nullable|string|max:50',
+            'clave_unidad_sat' => 'required_if:facturable,1|nullable|string|max:10'
         ];
     }
 

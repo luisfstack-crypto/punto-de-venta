@@ -299,7 +299,7 @@
                     <div class="col-md-12">
                         <p class="pv-section-label" style="margin-top:8px;">Imagen del producto</p>
                         <div class="pv-img-upload" id="drop-zone">
-                            <input type="file" name="imagen" id="imagen" accept="image/*">
+                            <input type="file" name="img_path" id="imagen" accept="image/*">
                             <div class="pv-img-upload-label">Arrastra una imagen o haz clic para seleccionar</div>
                             <div class="pv-img-upload-sub">PNG, JPG o WEBP — máx. 2 MB</div>
                             <img id="img-preview" src="" alt="Vista previa">
