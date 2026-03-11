@@ -27,8 +27,8 @@
                 <x-forms.input id="propietario" required='true' :defaultValue='$empresa->propietario' />
             </div>
 
-            <div class="col-md-6">
-                <x-forms.input id="ruc" required='true' :defaultValue='$empresa->ruc' />
+            <div class="col-md-6">  
+                <x-forms.input id="ruc" required='true' :defaultValue='$empresa->RFC' />
             </div>
 
             <div class="col-md-6">
