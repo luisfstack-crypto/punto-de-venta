@@ -19,7 +19,7 @@
     .pv-card { background: #fff; border-radius: 12px; border: 1px solid #E4E7EF; overflow: hidden; margin-bottom: 20px; }
     .pv-card-header { background: #0E1117; padding: 14px 22px; display: flex; align-items: center; gap: 12px; }
     .pv-card-header-num {
-        width: 28px; height: 28px; border-raZdius: 50%;
+        width: 28px; height: 28px; border-radius: 50%;
         background: linear-gradient(135deg, #3B82F6, #6366F1);
         color: #fff; font-family: 'Syne', sans-serif; font-size: .8rem; font-weight: 700;
         display: flex; align-items: center; justify-content: center; flex-shrink: 0;
