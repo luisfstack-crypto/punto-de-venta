@@ -328,14 +328,19 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/js/bootstrap-select.min.js"></script>
 <script>
     // ── Productos existentes desde el servidor ──
-    const productosExistentes = @json($cotizacion->productos->map(fn($p) => [
-        'id'          => $p->id,
-        'nombre'      => $p->nombre,
-        'cantidad'    => $p->pivot->cantidad,
-        'precio'      => $p->pivot->precio,
-        'descuento'   => $p->pivot->descuento ?? 0,
-        'descripcion' => $p->pivot->descripcion ?? '',
-    ]));
+    @php
+        $productosJS = $cotizacion->productos->map(function($p) {
+            return [
+                'id'          => $p->id,
+                'nombre'      => $p->nombre,
+                'cantidad'    => $p->pivot->cantidad,
+                'precio'      => $p->pivot->precio,
+                'descuento'   => $p->pivot->descuento ?? 0,
+                'descripcion' => $p->pivot->descripcion ?? '',
+            ];
+        });
+    @endphp
+    const productosExistentes = @json($productosJS);
 
     const impuesto = @json($empresa->porcentaje_impuesto);
 
