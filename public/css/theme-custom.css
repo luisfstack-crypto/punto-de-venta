@@ -1151,3 +1151,16 @@ a:hover { color: var(--pv-gold) !important; }
     50%  { top: calc(50% + 78px); opacity: 1; }
     100% { top: calc(50% - 80px); opacity: 1; }
 }
+
+/* ================================================================
+   LOGO BLEND MODES (ALFA Y OMEGA)
+   ================================================================ */
+/* Logo Alfa y Omega — eliminar fondo blanco */
+.ao-brand-logo img,
+.ao-logo-img {
+    mix-blend-mode: screen;        /* fondos oscuros */
+}
+[data-theme="light"] .ao-brand-logo img,
+[data-theme="light"] .ao-logo-img {
+    mix-blend-mode: multiply;      /* fondos claros */
+}

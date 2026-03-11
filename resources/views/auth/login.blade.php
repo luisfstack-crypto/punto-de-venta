@@ -389,9 +389,9 @@
             <div class="ao-logo-full">
                 <div class="ao-logo-svg-wrap">
                     <!-- Logo Alfa y Omega -->
-                    <img src="{{ asset('assets/img/logo.png') }}" 
+                    <img class="ao-logo-img" src="{{ asset('assets/img/logo.png') }}" 
                          alt="Alfa y Omega" 
-                         style="height:90px; width:auto; object-fit:contain;">
+                         style="height:90px; width:auto; object-fit:contain; mix-blend-mode: screen;">
                 </div>
                 <div class="ao-logo-text-wrap">
                     <div class="ao-logo-name">ALFA <span>Y</span> OMEGA</div>
@@ -428,9 +428,9 @@
 
             <!-- Mini logo -->
             <div class="form-brand">
-                <img src="{{ asset('assets/img/logo.png') }}" 
+                <img class="ao-logo-img" src="{{ asset('assets/img/logo.png') }}" 
                      alt="Alfa y Omega PV" 
-                     style="height:24px; width:auto; object-fit:contain;">
+                     style="height:24px; width:auto; object-fit:contain; mix-blend-mode: screen;">
                 <span class="form-brand-name">Alfa y Omega PV</span>
             </div>
 

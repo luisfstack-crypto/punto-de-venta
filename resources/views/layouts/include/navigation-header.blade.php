@@ -5,9 +5,9 @@
     <a class="navbar-brand ps-3 pe-2" href="{{ route('panel') }}" style="font-size:0!important;">
         <div class="ao-brand-logo" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
             {{-- Logo --}}
-            <img src="{{ asset('assets/img/logo.png') }}" 
+            <img class="ao-logo-img" src="{{ asset('assets/img/logo.png') }}" 
                  alt="Alfa y Omega PV" 
-                 style="height:36px; width:auto; object-fit:contain;">
+                 style="height:36px; width:auto; object-fit:contain; mix-blend-mode: screen;">
             {{-- Texto --}}
             <div style="display:flex;flex-direction:column;line-height:1.1;">
                 <span style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.82rem;color:#FFFFFF;letter-spacing:0.07em;text-transform:uppercase;">
