@@ -545,12 +545,10 @@
                 </button>
             </form>
 
-            @if (Route::has('register'))
                 <div class="form-divider"><span>o</span></div>
                 <div class="register-row">
                     ¿Sin cuenta aún? <a href="{{ route('register.index') }}">Solicitar acceso</a>
                 </div>
-            @endif
 
             <div class="form-footer">
                 <strong>Alfa y Omega · Punto de Venta</strong><br>
