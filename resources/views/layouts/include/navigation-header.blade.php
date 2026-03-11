@@ -4,32 +4,10 @@
     {{-- ══ BRAND / LOGO ══ --}}
     <a class="navbar-brand ps-3 pe-2" href="{{ route('panel') }}" style="font-size:0!important;">
         <div class="ao-brand-logo" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
-            {{-- Logo SVG --}}
-            <svg width="32" height="32" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
-                <defs>
-                    <linearGradient id="nh-gold" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#E8C97A"/>
-                        <stop offset="50%" stop-color="#C9A84C"/>
-                        <stop offset="100%" stop-color="#A0742A"/>
-                    </linearGradient>
-                    <linearGradient id="nh-navy" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#2A4A7F"/>
-                        <stop offset="100%" stop-color="#1B2D4F"/>
-                    </linearGradient>
-                    <linearGradient id="nh-accent" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#E8873A"/>
-                        <stop offset="100%" stop-color="#C9A84C"/>
-                    </linearGradient>
-                </defs>
-                <circle cx="100" cy="100" r="88" stroke="url(#nh-navy)" stroke-width="7" fill="none"/>
-                <path d="M 162 55 A 74 74 0 0 1 168 100" stroke="url(#nh-accent)" stroke-width="7" fill="none" stroke-linecap="round"/>
-                <path d="M 100 38 L 70 138 M 100 38 L 130 138 M 78 108 L 122 108"
-                      stroke="url(#nh-navy)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-                <path d="M 68 148 Q 68 118 100 118 Q 132 118 132 148"
-                      stroke="url(#nh-gold)" stroke-width="8" stroke-linecap="round" fill="none"/>
-                <path d="M 68 148 Q 68 162 78 162 L 96 162 M 132 148 Q 132 162 122 162 L 104 162"
-                      stroke="url(#nh-gold)" stroke-width="8" stroke-linecap="round" fill="none"/>
-            </svg>
+            {{-- Logo --}}
+            <img src="{{ asset('assets/img/logo.png') }}" 
+                 alt="Alfa y Omega PV" 
+                 style="height:36px; width:auto; object-fit:contain;">
             {{-- Texto --}}
             <div style="display:flex;flex-direction:column;line-height:1.1;">
                 <span style="font-family:'Syne',sans-serif;font-weight:700;font-size:0.82rem;color:#FFFFFF;letter-spacing:0.07em;text-transform:uppercase;">
@@ -107,6 +85,7 @@
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" id="navbarDropdown"
                href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                {{-- Avatar con inicial --}}
                 <div style="
                     width:30px;height:30px;border-radius:50%;
                     background:linear-gradient(135deg,#2A4A7F,#1B2D4F);
@@ -120,29 +99,135 @@
                     {{ auth()->user()?->name ?? 'Usuario' }}
                 </span>
             </a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown" style="min-width:220px;">
+
+                {{-- Info del usuario --}}
                 <li>
-                    <span class="dropdown-item" style="font-size:0.75rem;color:var(--pv-text-muted);cursor:default;">
-                        {{ auth()->user()?->email }}
-                    </span>
+                    <div class="px-3 py-2" style="border-bottom:1px solid var(--pv-border);">
+                        <div style="font-family:'Syne',sans-serif;font-weight:600;font-size:0.82rem;color:var(--pv-text-primary);">
+                            {{ auth()->user()?->name }}
+                        </div>
+                        <div style="font-size:0.72rem;color:var(--pv-text-muted);margin-top:1px;">
+                            {{ auth()->user()?->email }}
+                        </div>
+                        <div style="margin-top:4px;">
+                            <span style="
+                                display:inline-block;font-size:0.62rem;font-family:'Syne',sans-serif;
+                                font-weight:600;letter-spacing:0.06em;text-transform:uppercase;
+                                background:rgba(201,168,76,0.12);color:#C9A84C;
+                                border:1px solid rgba(201,168,76,0.25);
+                                border-radius:20px;padding:0.15em 0.6em;
+                            ">
+                                {{ auth()->user()?->getRoleNames()->first() ?? 'Usuario' }}
+                            </span>
+                        </div>
+                    </div>
                 </li>
-                <li><hr class="dropdown-divider"></li>
-                @can('administrador')
+
+                {{-- Configuración de cuenta / Mi perfil --}}
                 <li>
-                    <a class="dropdown-item" href="{{ route('users.index') }}">
-                        <i class="fas fa-users fa-fw me-2" style="color:var(--pv-gold);font-size:0.8rem;"></i>
-                        Administrar usuarios
+                    <a class="dropdown-item d-flex align-items-center gap-2" href="{{ route('profile.index') }}">
+                        <span style="
+                            width:26px;height:26px;border-radius:7px;
+                            background:rgba(42,74,127,0.12);
+                            display:flex;align-items:center;justify-content:center;flex-shrink:0;
+                        ">
+                            <i class="fas fa-user-gear" style="color:#2A4A7F;font-size:0.72rem;"></i>
+                        </span>
+                        <div>
+                            <div style="font-size:0.83rem;font-weight:500;">Mi perfil</div>
+                            <div style="font-size:0.68rem;color:var(--pv-text-muted);">Datos y configuración</div>
+                        </div>
                     </a>
                 </li>
-                @endcan
+
+                {{-- Cambiar contraseña (va al mismo perfil, sección password) --}}
                 <li>
-                    <a class="dropdown-item" href="{{ route('logout') }}"
+                    <a class="dropdown-item d-flex align-items-center gap-2" href="{{ route('profile.index') }}#password">
+                        <span style="
+                            width:26px;height:26px;border-radius:7px;
+                            background:rgba(201,168,76,0.10);
+                            display:flex;align-items:center;justify-content:center;flex-shrink:0;
+                        ">
+                            <i class="fas fa-lock" style="color:#C9A84C;font-size:0.72rem;"></i>
+                        </span>
+                        <div>
+                            <div style="font-size:0.83rem;font-weight:500;">Cambiar contraseña</div>
+                            <div style="font-size:0.68rem;color:var(--pv-text-muted);">Actualizar credenciales</div>
+                        </div>
+                    </a>
+                </li>
+
+                {{-- Historial de actividad --}}
+                <li>
+                    <a class="dropdown-item d-flex align-items-center gap-2" href="{{ route('activityLog.index') }}">
+                        <span style="
+                            width:26px;height:26px;border-radius:7px;
+                            background:rgba(16,185,129,0.10);
+                            display:flex;align-items:center;justify-content:center;flex-shrink:0;
+                        ">
+                            <i class="fas fa-clock-rotate-left" style="color:#10B981;font-size:0.72rem;"></i>
+                        </span>
+                        <div>
+                            <div style="font-size:0.83rem;font-weight:500;">Historial de actividad</div>
+                            <div style="font-size:0.68rem;color:var(--pv-text-muted);">Acciones recientes</div>
+                        </div>
+                    </a>
+                </li>
+
+                {{-- Mis ventas del día --}}
+                <li>
+                    <a class="dropdown-item d-flex align-items-center gap-2" href="{{ route('ventas.index') }}">
+                        <span style="
+                            width:26px;height:26px;border-radius:7px;
+                            background:rgba(6,182,212,0.10);
+                            display:flex;align-items:center;justify-content:center;flex-shrink:0;
+                        ">
+                            <i class="fas fa-chart-line" style="color:#06B6D4;font-size:0.72rem;"></i>
+                        </span>
+                        <div>
+                            <div style="font-size:0.83rem;font-weight:500;">Mis ventas del día</div>
+                            <div style="font-size:0.68rem;color:var(--pv-text-muted);">Resumen de hoy</div>
+                        </div>
+                    </a>
+                </li>
+
+                <li><hr class="dropdown-divider my-1"></li>
+
+                {{-- Admin: Usuarios --}}
+                @can('administrador')
+                <li>
+                    <a class="dropdown-item d-flex align-items-center gap-2" href="{{ route('users.index') }}">
+                        <span style="
+                            width:26px;height:26px;border-radius:7px;
+                            background:rgba(99,102,241,0.10);
+                            display:flex;align-items:center;justify-content:center;flex-shrink:0;
+                        ">
+                            <i class="fas fa-users" style="color:#6366F1;font-size:0.72rem;"></i>
+                        </span>
+                        <div style="font-size:0.83rem;font-weight:500;">Administrar usuarios</div>
+                    </a>
+                </li>
+                <li><hr class="dropdown-divider my-1"></li>
+                @endcan
+
+                {{-- Cerrar sesión --}}
+                <li>
+                    <a class="dropdown-item d-flex align-items-center gap-2" href="{{ route('logout') }}"
                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                        <i class="fas fa-right-from-bracket fa-fw me-2" style="color:#EF4444;font-size:0.8rem;"></i>
-                        Cerrar sesión
+                        <span style="
+                            width:26px;height:26px;border-radius:7px;
+                            background:rgba(239,68,68,0.10);
+                            display:flex;align-items:center;justify-content:center;flex-shrink:0;
+                        ">
+                            <i class="fas fa-right-from-bracket" style="color:#EF4444;font-size:0.72rem;"></i>
+                        </span>
+                        <div style="font-size:0.83rem;font-weight:500;color:#EF4444;">Cerrar sesión</div>
                     </a>
                     <form id="logout-form" action="{{ route('logout') }}" method="GET" style="display:none;"></form>
                 </li>
+
             </ul>
         </li>
 

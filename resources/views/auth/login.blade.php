@@ -388,36 +388,10 @@
             <!-- Logo completo -->
             <div class="ao-logo-full">
                 <div class="ao-logo-svg-wrap">
-                    <!-- Logo SVG Alfa y Omega -->
-                    <svg width="64" height="64" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <defs>
-                            <linearGradient id="goldG" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stop-color="#E8C97A"/>
-                                <stop offset="50%" stop-color="#C9A84C"/>
-                                <stop offset="100%" stop-color="#A0742A"/>
-                            </linearGradient>
-                            <linearGradient id="navyG" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stop-color="#2A4A7F"/>
-                                <stop offset="100%" stop-color="#1B2D4F"/>
-                            </linearGradient>
-                            <linearGradient id="accentG" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stop-color="#E8873A"/>
-                                <stop offset="100%" stop-color="#C9A84C"/>
-                            </linearGradient>
-                        </defs>
-                        <!-- Anillo exterior navy -->
-                        <circle cx="100" cy="100" r="88" stroke="url(#navyG)" stroke-width="6" fill="none"/>
-                        <!-- Arco acento naranja-dorado (toque superior derecho) -->
-                        <path d="M 162 55 A 74 74 0 0 1 168 100" stroke="url(#accentG)" stroke-width="6" fill="none" stroke-linecap="round"/>
-                        <!-- Letra A (triángulo con barra) -->
-                        <path d="M 100 38 L 70 138 M 100 38 L 130 138 M 78 108 L 122 108"
-                              stroke="url(#navyG)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-                        <!-- Omega Ω base (curva inferior) -->
-                        <path d="M 68 148 Q 68 162 78 162 L 96 162 M 132 148 Q 132 162 122 162 L 104 162"
-                              stroke="url(#goldG)" stroke-width="7" stroke-linecap="round" fill="none"/>
-                        <path d="M 68 148 Q 68 118 100 118 Q 132 118 132 148"
-                              stroke="url(#goldG)" stroke-width="7" stroke-linecap="round" fill="none"/>
-                    </svg>
+                    <!-- Logo Alfa y Omega -->
+                    <img src="{{ asset('assets/img/logo.png') }}" 
+                         alt="Alfa y Omega" 
+                         style="height:90px; width:auto; object-fit:contain;">
                 </div>
                 <div class="ao-logo-text-wrap">
                     <div class="ao-logo-name">ALFA <span>Y</span> OMEGA</div>
@@ -454,11 +428,9 @@
 
             <!-- Mini logo -->
             <div class="form-brand">
-                <svg width="22" height="22" viewBox="0 0 200 200" fill="none">
-                    <circle cx="100" cy="100" r="88" stroke="#2A4A7F" stroke-width="8" fill="none"/>
-                    <path d="M100 38L70 138M100 38L130 138M78 108L122 108" stroke="#2A4A7F" stroke-width="10" stroke-linecap="round" fill="none"/>
-                    <path d="M68 148Q68 118 100 118Q132 118 132 148M68 148Q68 162 78 162L96 162M132 148Q132 162 122 162L104 162" stroke="#C9A84C" stroke-width="8" stroke-linecap="round" fill="none"/>
-                </svg>
+                <img src="{{ asset('assets/img/logo.png') }}" 
+                     alt="Alfa y Omega PV" 
+                     style="height:24px; width:auto; object-fit:contain;">
                 <span class="form-brand-name">Alfa y Omega PV</span>
             </div>
 
