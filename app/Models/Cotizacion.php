@@ -67,6 +67,9 @@ class Cotizacion extends Model
 
     public function getUrlPublicaAttribute(): string
     {
+        if (empty($this->token_publico)) {
+            return '#';
+        }
         return route('cotizaciones.publica', $this->token_publico);
     }
 }
