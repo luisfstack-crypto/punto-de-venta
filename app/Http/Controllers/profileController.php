@@ -36,6 +36,8 @@ class profileController extends Controller
             'email'    => 'required|unique:users,email,' . $profile->id,
             'password' => 'nullable',
             'logo'     => 'nullable|image|mimes:png,jpg,jpeg|max:2048',
+            'empresa_nombre' => 'nullable|string|max:255',
+            'empresa_telefono' => 'nullable|string|max:20',
         ]);
 
         // Password

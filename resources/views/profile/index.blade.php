@@ -40,6 +40,18 @@
                             :defaultValue='auth()->user()->email' />
                     </div>
 
+                    <div class="col-12">
+                        <x-forms.input id='empresa_nombre'
+                            labelText='Nombre de su empresa'
+                            :defaultValue='auth()->user()->empresa_nombre' />
+                    </div>
+
+                    <div class="col-12">
+                        <x-forms.input id='empresa_telefono'
+                            labelText='Teléfono de la empresa'
+                            :defaultValue='auth()->user()->empresa_telefono' />
+                    </div>
+
                     <!----Password--->
                     <div class="col-12">
                         <x-forms.input id='password'

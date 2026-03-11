@@ -28,7 +28,9 @@ class User extends Authenticatable
         'empleado_id',
         'status',
         'payment_receipt',
-        'logo'
+        'logo',
+        'empresa_nombre',
+        'empresa_telefono'
     ];
 
     /**

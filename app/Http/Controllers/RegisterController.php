@@ -22,6 +22,8 @@ class RegisterController extends Controller
             'email'            => 'required|string|email|max:255|unique:users',
             'password'         => 'required|string|min:8|confirmed',
             'payment_receipt'  => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'empresa_nombre'   => 'nullable|string|max:255',
+            'empresa_telefono' => 'nullable|string|max:20',
         ]);
 
         $path = null;
@@ -42,6 +44,8 @@ class RegisterController extends Controller
             'payment_receipt' => $path,
             'estado'          => 1,
             'status'          => 'pending',
+            'empresa_nombre'  => $request->empresa_nombre,
+            'empresa_telefono' => $request->empresa_telefono,
         ]);
 
         try {

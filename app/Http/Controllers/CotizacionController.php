@@ -106,8 +106,10 @@ class CotizacionController extends Controller
     {
         try {
             $empresa = $this->empresaService->obtenerEmpresa();
+            $user = $cotizacion->user;
+            $fromName = $user->empresa_nombre ?? ($empresa->nombre ?? 'Punto de Venta');
 
-            \Illuminate\Support\Facades\Config::set('mail.from.name', $empresa->nombre ?? 'Punto de Venta');
+            \Illuminate\Support\Facades\Config::set('mail.from.name', $fromName);
 
             if ($empresa->mail_host && $empresa->mail_username && $empresa->mail_password) {
                 \Illuminate\Support\Facades\Config::set('mail.mailers.smtp.host', $empresa->mail_host);

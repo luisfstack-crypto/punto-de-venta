@@ -398,6 +398,24 @@
                 </div>
 
                 <div class="field">
+                    <label class="field-label">Nombre del Negocio</label>
+                    <div class="field-wrap">
+                        <i class="fas fa-store fi-icon"></i>
+                        <input type="text" name="empresa_nombre" class="field-input"
+                               value="{{ old('empresa_nombre') }}" placeholder="Ej. Abarrotes Mary">
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label class="field-label">Teléfono del Negocio</label>
+                    <div class="field-wrap">
+                        <i class="fas fa-phone fi-icon"></i>
+                        <input type="text" name="empresa_telefono" class="field-input"
+                               value="{{ old('empresa_telefono') }}" placeholder="999 000 0000">
+                    </div>
+                </div>
+
+                <div class="field">
                     <label class="field-label">Contraseña</label>
                     <div class="field-wrap">
                         <i class="fas fa-lock fi-icon"></i>
