@@ -133,6 +133,60 @@ class CotizacionController extends Controller
         return redirect()->back()->with('success', 'Estado actualizado');
     }
 
+    public function edit(Cotizacion $cotizacion)
+    {
+        $clientes    = Cliente::with('persona')->get();
+        $productos   = Producto::where('estado', 1)->get();
+        $empresa     = $this->empresaService->obtenerEmpresa();
+        return view('cotizacion.edit', compact('cotizacion', 'clientes', 'productos', 'empresa'));
+    }
+
+    public function update(Request $request, Cotizacion $cotizacion)
+    {
+
+        if ($cotizacion->estado != 1) {
+            return back()->with('error', 'Solo se pueden editar cotizaciones pendientes.');
+        }
+        
+        try {
+            DB::beginTransaction();
+            $cotizacion->update([
+                'fecha_validez'   => $request->fecha_validez,
+                'impuesto'        => $request->impuesto ?? 0,
+                'total'           => $request->total,
+                'aplicar_iva'     => $request->boolean('aplicar_iva'),
+                'descuento_global' => $request->descuento_global ?? 0,
+                'observaciones'   => $request->observaciones,
+                'cliente_id'      => $request->cliente_id,
+            ]);
+
+            $arrayidproducto = $request->arrayidproducto;
+            $arraycantidad = $request->arraycantidad;
+            $arrayprecioventa = $request->arrayprecioventa;
+            $arraydescuento = $request->arraydescuento;
+            $arraydescripcion = $request->arraydescripcion;
+
+            $syncData = [];
+            foreach ($arrayidproducto as $index => $id) {
+                $syncData[$id] = [
+                    'cantidad'    => $arraycantidad[$index],
+                    'precio'      => $arrayprecioventa[$index],
+                    'descuento'   => $arraydescuento[$index] ?? 0,
+                    'descripcion' => $arraydescripcion[$index] ?? null,
+                ];
+            }
+            $cotizacion->productos()->sync($syncData);
+
+            DB::commit();
+            return redirect()->route('cotizaciones.show', $cotizacion)
+                ->with('success', 'Cotización actualizada');
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error('Error al editar cotización', ['error' => $e->getMessage()]);
+            return back()->with('error', 'Error al actualizar la cotización');
+        }
+    }
+
     /**
      * Vista pública — sin login requerido
      */

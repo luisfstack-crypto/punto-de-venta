@@ -143,7 +143,13 @@
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton{{$item->id}}">
                                     <li>
-                                        <a class="dropdown-item" href="javascript:void(0)" onclick="copyToClipboard('{{ route('cotizaciones.show', $item) }}')">
+                                        <a class="dropdown-item" href="{{ route('cotizaciones.edit', $item->id) }}">
+                                            <i class="fa-solid fa-pen me-2"></i> Editar
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item" href="javascript:void(0)" onclick="copyToClipboard('{{ route('cotizaciones.publica', $item->token_publico) }}')">
                                             <i class="fa-solid fa-copy me-2"></i> Copiar URL
                                         </a>
                                     </li>

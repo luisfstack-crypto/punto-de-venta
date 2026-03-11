@@ -81,6 +81,12 @@ Route::group(['middleware' => ['auth', 'check-user-status'], 'prefix' => 'admin'
     Route::resource('categorias', categoriaController::class)->except('show');
     Route::resource('presentaciones', presentacioneController::class)->except('show');
     Route::resource('marcas', marcaController::class)->except('show');
+    
+    // Importación masiva de productos
+    Route::get('/productos/import',          [ProductoController::class, 'importForm'])->name('productos.import.form');
+    Route::post('/productos/import',         [ProductoController::class, 'importStore'])->name('productos.import.store');
+    Route::get('/productos/import/plantilla',[ProductoController::class, 'downloadTemplate'])->name('productos.import.template');
+
     Route::resource('productos', ProductoController::class)->except('show', 'destroy');
     Route::resource('clientes', clienteController::class)->except('show');
     Route::resource('proveedores', proveedorController::class)->except('show');

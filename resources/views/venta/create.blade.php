@@ -286,8 +286,8 @@
                     <select required name="metodo_pago" id="metodo_pago"
                         class="form-control selectpicker" title="Selecciona">
                         @foreach ($optionsMetodoPago as $item)
-                        <option value="{{ $item->value }}" {{ old('metodo_pago') == $item->value ? 'selected' : '' }}>
-                            {{ $item->name }}
+                        <option value="{{ $item->value }}" {{ old('metodo_pago') == $item->value ? 'selected' : '' }} data-icon="{{ $item->icon() }}">
+                            {{ $item->label() }}
                         </option>
                         @endforeach
                     </select>
@@ -345,7 +345,7 @@
                     </div>
                     <div class="field-pill">
                         <label>Precio Unit.</label>
-                        <input disabled id="precio" type="number" step="any" placeholder="—">
+                        <input id="precio" type="number" step="any" placeholder="—">
                     </div>
                     <div class="field-pill">
                         <label>Cantidad</label>

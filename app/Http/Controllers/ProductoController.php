@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProductoRequest;
 use App\Http\Requests\UpdateProductoRequest;
+use App\Imports\ProductoImport;
 use App\Models\Categoria;
 use App\Models\Marca;
 use App\Models\Presentacione;
@@ -12,7 +13,9 @@ use App\Services\ActivityLogService;
 use App\Services\ProductoService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
 use Throwable;
 
 class ProductoController extends Controller
@@ -150,5 +153,47 @@ class ProductoController extends Controller
         }
 
         return redirect()->route('productos.index')->with('success', $message);*/
+    }
+
+    public function importForm()
+    {
+        return view('producto.import');
+    }
+
+    public function importStore(Request $request)
+    {
+        $request->validate([
+            'archivo' => 'required|mimes:xlsx,xls,csv|max:5120',
+        ], [
+            'archivo.required' => 'Debes adjuntar un archivo válido.',
+            'archivo.mimes'    => 'Solo se permiten archivos Excel o CSV.',
+            'archivo.max'      => 'El archivo no debe pesar más de 5MB.',
+        ]);
+
+        try {
+            $import = new ProductoImport();
+            Excel::import($import, $request->file('archivo'));
+
+            if (!empty($import->errors)) {
+                $erroresStr = implode('<br>', $import->errors);
+                return back()->with('warning', "Se importaron {$import->imported} productos, pero hubo algunos problemas:<br>{$erroresStr}");
+            }
+
+            return redirect()->route('productos.index')->with('success', "¡Excelente! Se importaron {$import->imported} productos correctamente.");
+
+        } catch (\Throwable $e) {
+            Log::error('Error masivo de productos', [$e->getMessage()]);
+            return back()->with('error', 'Ocurrió un problema inesperado: ' . $e->getMessage());
+        }
+    }
+
+    public function downloadTemplate()
+    {
+        $content = "nombre,precio,descripcion,codigo,categoria,marca,presentacion,facturable,clave_producto_sat,clave_unidad_sat,unidad_medida,tasa_cuota\n";
+        $content .= "Laptop Dell Inspiron,15000.50,Laptop 16GB RAM,LP-DELL-15,,,,,si,43211507,H87,Pieza,0.160000\n";
+        
+        return response($content)
+            ->header('Content-Type', 'text/csv')
+            ->header('Content-Disposition', 'attachment; filename="plantilla_productos.csv"');
     }
 }

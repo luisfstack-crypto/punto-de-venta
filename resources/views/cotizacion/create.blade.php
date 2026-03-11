@@ -369,7 +369,7 @@
                     </div>
                     <div class="field-pill">
                         <label>Precio Unit.</label>
-                        <input disabled id="precio" type="number" step="any" placeholder="—">
+                        <input id="precio" type="number" step="any" placeholder="—">
                     </div>
                     <div class="field-pill">
                         <label>Cantidad</label>

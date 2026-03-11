@@ -167,7 +167,7 @@
             </div>
 
             <br>
-            <a href="{{ route('cotizaciones.show', $cotizacion) }}" class="cta-button" style="color: #ffffff;">Ver Cotización Completa</a>
+            <a href="{{ route('cotizaciones.publica', $cotizacion->token_publico) }}" class="cta-button" style="color: #ffffff;">Ver Cotización Completa</a>
             
             <p style="margin-top: 30px; font-size: 14px; color: #666;">
                 Si tienes alguna pregunta, no dudes en contactarnos directamente respondiendo a este correo.

@@ -20,9 +20,12 @@
     </ol>
 
     @can('crear-producto')
-    <div class="mb-4">
-        <a href="{{route('productos.create')}}">
-            <button type="button" class="btn btn-primary">Añadir nuevo registro</button>
+    <div class="mb-4 d-flex gap-2">
+        <a href="{{route('productos.create')}}" class="btn btn-primary">
+            Añadir nuevo registro
+        </a>
+        <a href="{{ route('productos.import.form') }}" class="btn btn-outline-primary">
+            <i class="fas fa-file-excel me-1"></i> Importar Excel
         </a>
     </div>
     @endcan
