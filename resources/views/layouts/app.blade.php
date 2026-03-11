@@ -15,7 +15,7 @@
 
     @stack('css-datatable')
     <link href="{{ asset('css/styles.css') }}" rel="stylesheet" />
-    <link href="{{ asset('css/theme-custom.css') }}" rel="stylesheet" />
+    <link href="{{ asset('css/theme-custom.css') }}?v=1.1" rel="stylesheet" />
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
     @stack('css')
     @stack('styles')

@@ -1153,14 +1153,20 @@ a:hover { color: var(--pv-gold) !important; }
 }
 
 /* ================================================================
-   LOGO BLEND MODES (ALFA Y OMEGA)
+   LOGO BADGE (ALFA Y OMEGA)
    ================================================================ */
-/* Logo Alfa y Omega — eliminar fondo blanco */
-.ao-brand-logo img,
-.ao-logo-img {
-    mix-blend-mode: screen;        /* fondos oscuros */
+/* Contenedor blanco para el logo en fondos oscuros */
+.ao-logo-badge {
+    background-color: #ffffff;
+    padding: 1px 6px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 12px rgba(255, 255, 255, 0.08);
 }
-[data-theme="light"] .ao-brand-logo img,
-[data-theme="light"] .ao-logo-img {
-    mix-blend-mode: multiply;      /* fondos claros */
+
+[data-theme="light"] .ao-logo-badge {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); /* Sombra suave para modo claro */
+    border: 1px solid rgba(0,0,0,0.05); /* Borde sutil */
 }
