@@ -40,6 +40,9 @@
                 <thead>
                     <tr>
                         <th>Producto</th>
+                        @can('administrador')
+                        <th>Costo</th>
+                        @endcan
                         <th>Precio</th>
                         <th>Marca</th>
                         <th>Categoría</th>
@@ -53,6 +56,11 @@
                         <td>
                             {{$item->nombreCompleto}}
                         </td>
+                        @can('administrador')
+                        <td>
+                            {{$item->costo ?? '—'}}
+                        </td>
+                        @endcan
                         <td>
                             {{$item->precio ?? 'No aperturado'}}
                         </td>
@@ -132,6 +140,14 @@
                                     <div class="row">
                                         <div class="col-12">
                                             <p><span class="fw-bolder">Descripción: </span>{{$item->descripcion ?? 'No tiene'}}</p>
+                                        </div>
+                                        @can('administrador')
+                                        <div class="col-12">
+                                            <p><span class="fw-bolder">Costo: </span>{{$item->costo ?? '—'}}</p>
+                                        </div>
+                                        @endcan
+                                        <div class="col-12">
+                                            <p><span class="fw-bolder">Precio: </span>{{$item->precio ?? '—'}}</p>
                                         </div>
                                         <div class="col-12">
                                             <p class="fw-bolder">Imagen:</p>

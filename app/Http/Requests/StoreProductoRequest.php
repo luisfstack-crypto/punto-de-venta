@@ -30,6 +30,7 @@ class StoreProductoRequest extends FormRequest
             'presentacione_id' => 'required|integer|exists:presentaciones,id',
             'categoria_id' => 'nullable|integer|exists:categorias,id',
             'precio' => 'required|numeric|min:0',
+            'costo' => 'nullable|numeric|min:0',
             'facturable' => 'nullable|boolean',
             'clave_producto_sat' => 'required_if:facturable,1|nullable|string|max:20',
             'codigo_interno' => 'nullable|string|max:50',

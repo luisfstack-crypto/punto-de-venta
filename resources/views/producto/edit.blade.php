@@ -218,18 +218,36 @@
                     </div>
 
                     {{-- Código --}}
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <div class="pv-field">
                             <label for="codigo">Código interno</label>
                             <input type="text" id="codigo" name="codigo"
-                                   value="{{ old('codigo', $producto->codigo) }}" placeholder="Autogenerado si se deja vacío">
+                                   value="{{ old('codigo', $producto->codigo) }}" placeholder="Autogenerado">
                         </div>
                     </div>
 
+                    {{-- Costo (Solo admin) --}}
+                    @can('administrador')
+                    <div class="col-md-2">
+                        <div class="pv-field @error('costo') is-invalid @enderror pv-field-precio">
+                            <label for="costo">Costo inicial</label>
+                            <div style="display:flex; align-items:flex-end;">
+                                <span class="pv-precio-prefix">$</span>
+                                <input type="number" id="costo" name="costo"
+                                       value="{{ old('costo', $producto->costo) }}" placeholder="0.00"
+                                       step="0.0001" min="0" style="padding-left:4px;">
+                            </div>
+                        </div>
+                        @error('costo')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+                    @else
+                    <input type="hidden" name="costo" value="{{ old('costo', $producto->costo) }}">
+                    @endcan
+
                     {{-- Precio --}}
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <div class="pv-field @error('precio') is-invalid @enderror pv-field-precio">
-                            <label for="precio">Precio de venta *</label>
+                            <label for="precio">Precio venta *</label>
                             <div style="display:flex; align-items:flex-end;">
                                 <span class="pv-precio-prefix">$</span>
                                 <input type="number" id="precio" name="precio"

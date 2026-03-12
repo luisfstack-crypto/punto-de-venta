@@ -104,6 +104,10 @@ class CotizacionController extends Controller
 
     public function sendEmail(Cotizacion $cotizacion)
     {
+        if (empty($cotizacion->cliente->persona->email)) {
+            return redirect()->back()->with('error', 'El cliente no tiene un correo electrónico registrado.');
+        }
+
         try {
             $empresa = $this->empresaService->obtenerEmpresa();
             $user = $cotizacion->user;
