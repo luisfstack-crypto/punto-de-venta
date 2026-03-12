@@ -123,8 +123,14 @@ class CotizacionController extends Controller
 
             // SIN app()->forgetInstances()
 
-            Mail::to($cotizacion->cliente->persona->email)
-                ->send(new CotizacionMail($cotizacion, $empresa));
+            if ($empresa->correo) {
+                Mail::to($cotizacion->cliente->persona->email)
+                    ->bcc($empresa->correo)
+                    ->send(new CotizacionMail($cotizacion, $empresa));
+            } else {
+                Mail::to($cotizacion->cliente->persona->email)
+                    ->send(new CotizacionMail($cotizacion, $empresa));
+            }
 
             $cotizacion->update(['enviado_at' => now()]);
 
