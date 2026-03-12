@@ -110,10 +110,8 @@ class CotizacionController extends Controller
 
         try {
             $empresa = $this->empresaService->obtenerEmpresa();
-            $user = $cotizacion->user;
-            $fromName = $user->empresa_nombre ?? ($empresa->nombre ?? 'Punto de Venta');
 
-            \Illuminate\Support\Facades\Config::set('mail.from.name', $fromName);
+            \Illuminate\Support\Facades\Config::set('mail.from.name', $empresa->nombre ?? 'Punto de Venta');
 
             if ($empresa->mail_host && $empresa->mail_username && $empresa->mail_password) {
                 \Illuminate\Support\Facades\Config::set('mail.mailers.smtp.host', $empresa->mail_host);
@@ -123,17 +121,18 @@ class CotizacionController extends Controller
                 \Illuminate\Support\Facades\Config::set('mail.from.address', $empresa->mail_username);
             }
 
-            app()->forgetInstances();
-            
+            // SIN app()->forgetInstances()
+
             Mail::to($cotizacion->cliente->persona->email)
                 ->send(new CotizacionMail($cotizacion, $empresa));
 
             $cotizacion->update(['enviado_at' => now()]);
 
             return redirect()->back()->with('success', 'Cotización enviada por correo');
+
         } catch (Exception $e) {
             Log::error('Error al enviar cotización', ['error' => $e->getMessage()]);
-            return redirect()->back()->with('error', 'No se pudo enviar el correo');
+            return redirect()->back()->with('error', 'No se pudo enviar: ' . $e->getMessage());
         }
     }
 
