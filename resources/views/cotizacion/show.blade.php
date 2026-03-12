@@ -26,7 +26,9 @@
         <a href="{{ route('export.pdf-cotizacion', $cotizacion->id) }}" class="btn btn-primary me-2" target="_blank"><i class="fa-solid fa-file-pdf"></i> Imprimir/PDF</a>
 
         @if($cotizacion->estado != 2)
-            <a href="{{ route('cotizaciones.email', $cotizacion) }}" class="btn btn-info me-2 text-white"><i class="fa-solid fa-envelope"></i> Enviar Correo</a>
+            <button type="button" class="btn btn-info me-2 text-white" data-bs-toggle="modal" data-bs-target="#emailModal">
+                <i class="fa-solid fa-envelope"></i> Enviar Correo
+            </button>
             <a href="{{ route('ventas.create', ['cotizacion_id' => $cotizacion->id]) }}" class="btn btn-success me-2"><i class="fa-solid fa-check"></i> Convertir a Venta</a>
             
             <button type="button" class="btn btn-warning text-dark" data-bs-toggle="modal" data-bs-target="#renewModal">
@@ -163,6 +165,123 @@
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-warning text-dark fw-bold">Actualizar Vigencia</button>
                 </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MODAL — Enviar Cotización por Correo
+══════════════════════════════════════════ -->
+<div class="modal fade" id="emailModal" tabindex="-1" aria-labelledby="emailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <form action="{{ route('cotizaciones.email', $cotizacion) }}" method="POST">
+            @csrf
+            <div class="modal-content border-0 shadow-lg">
+
+                {{-- Header --}}
+                <div class="modal-header" style="background: linear-gradient(135deg, #1B2D4F, #2a4070); border-bottom: 3px solid #C9A84C;">
+                    <div>
+                        <h5 class="modal-title text-white fw-bold mb-0" id="emailModalLabel">
+                            <i class="fa-solid fa-envelope me-2" style="color:#C9A84C;"></i>
+                            Enviar Cotización #CIT-{{ $cotizacion->id }}
+                        </h5>
+                        <small style="color:rgba(255,255,255,0.5); font-size:0.75rem;">
+                            Personaliza el correo antes de enviarlo
+                        </small>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+
+                {{-- Body --}}
+                <div class="modal-body p-4" style="background:#f8fafc;">
+
+                    {{-- Destinatario --}}
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold" style="font-size:0.8rem; letter-spacing:0.05em; text-transform:uppercase; color:#6B7280;">
+                            <i class="fa-solid fa-user me-1" style="color:#C9A84C;"></i> Destinatario
+                        </label>
+                        <input
+                            type="email"
+                            name="destinatario"
+                            class="form-control"
+                            value="{{ $cotizacion->cliente->persona->email ?? '' }}"
+                            placeholder="correo@ejemplo.com"
+                            required
+                            style="border-radius:8px; border:1.5px solid #e2e8f0; font-size:0.9rem;"
+                        >
+                        @if(empty($cotizacion->cliente->persona->email))
+                            <div class="form-text text-warning">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                El cliente no tiene correo registrado. Escribe uno manualmente.
+                            </div>
+                        @else
+                            <div class="form-text text-muted">
+                                Correo del cliente. Puedes cambiarlo para este envío sin afectar el registro.
+                            </div>
+                        @endif
+                    </div>
+
+                    {{-- Asunto --}}
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold" style="font-size:0.8rem; letter-spacing:0.05em; text-transform:uppercase; color:#6B7280;">
+                            <i class="fa-solid fa-tag me-1" style="color:#C9A84C;"></i> Asunto
+                        </label>
+                        <input
+                            type="text"
+                            name="asunto"
+                            class="form-control"
+                            value="Cotización {{ $empresa->nombre ?? config('app.name') }} - {{ $cotizacion->observaciones ?? 'Presupuesto #CIT-'.$cotizacion->id }}"
+                            required
+                            style="border-radius:8px; border:1.5px solid #e2e8f0; font-size:0.9rem;"
+                        >
+                    </div>
+
+                    {{-- Mensaje personalizado --}}
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold" style="font-size:0.8rem; letter-spacing:0.05em; text-transform:uppercase; color:#6B7280;">
+                            <i class="fa-solid fa-message me-1" style="color:#C9A84C;"></i> Mensaje
+                        </label>
+                        <textarea
+                            name="mensaje"
+                            class="form-control"
+                            rows="4"
+                            placeholder="Estimado cliente, adjuntamos la cotización solicitada. Quedamos a sus órdenes para cualquier consulta..."
+                            style="border-radius:8px; border:1.5px solid #e2e8f0; font-size:0.9rem; resize:vertical;"
+                        ></textarea>
+                        <div class="form-text text-muted">Opcional. Si lo dejas vacío se usará un mensaje estándar.</div>
+                    </div>
+
+                    {{-- Firma --}}
+                    <div class="mb-1">
+                        <label class="form-label fw-semibold" style="font-size:0.8rem; letter-spacing:0.05em; text-transform:uppercase; color:#6B7280;">
+                            <i class="fa-solid fa-pen-nib me-1" style="color:#C9A84C;"></i> Firma
+                        </label>
+                        <textarea
+                            name="firma"
+                            class="form-control"
+                            rows="4"
+                            style="border-radius:8px; border:1.5px solid #e2e8f0; font-size:0.9rem; font-family:monospace; resize:vertical;"
+                        >{{ auth()->user()->name }}
+{{ auth()->user()->empresa_nombre ?? $empresa->nombre ?? '' }}
+{{ $empresa->telefono ?? '' }}
+{{ auth()->user()->email }}</textarea>
+                        <div class="form-text text-muted">Aparece al final del correo. Puedes editarla para este envío.</div>
+                    </div>
+
+                </div>
+
+                {{-- Footer --}}
+                <div class="modal-footer" style="background:#f8fafc; border-top:1px solid #e2e8f0;">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn text-white fw-bold px-4"
+                        style="background: linear-gradient(135deg, #C9A84C, #A0742A); border:none; border-radius:8px;">
+                        <i class="fa-solid fa-paper-plane me-2"></i> Enviar correo
+                    </button>
+                </div>
+
             </div>
         </form>
     </div>

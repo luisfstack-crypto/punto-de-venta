@@ -112,7 +112,7 @@ Route::group(['middleware' => ['auth', 'check-user-status'], 'prefix' => 'admin'
     Route::resource('cajas', CajaController::class)->except('edit', 'update', 'show');
     Route::resource('movimientos', MovimientoController::class)->except('show', 'edit', 'update', 'destroy');
     Route::resource('cotizaciones', CotizacionController::class)->parameters(['cotizaciones' => 'cotizacion']);
-    Route::get('cotizaciones/{cotizacion}/email', [CotizacionController::class, 'sendEmail'])->name('cotizaciones.email');
+    Route::post('cotizaciones/{cotizacion}/email', [CotizacionController::class, 'sendEmail'])->name('cotizaciones.email');
 
     Route::get('cotizaciones/{cotizacion}/duplicate', [CotizacionController::class, 'duplicate'])->name('cotizaciones.duplicate');
     Route::patch('cotizaciones/{cotizacion}/renew', [CotizacionController::class, 'renew'])->name('cotizaciones.renew'); // New Renew Route

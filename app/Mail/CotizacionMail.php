@@ -4,7 +4,6 @@ namespace App\Mail;
 
 use App\Models\Cotizacion;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
@@ -16,41 +15,34 @@ class CotizacionMail extends Mailable
 
     public $cotizacion;
     public $empresa;
+    public $asunto;
+    public $mensajePersonalizado;
+    public $firma;
 
-    /**
-     * Create a new message instance.
-     */
-    public function __construct(Cotizacion $cotizacion, $empresa)
-    {
-        $this->cotizacion = $cotizacion;
-        $this->empresa = $empresa;
+    public function __construct(
+        Cotizacion $cotizacion,
+        $empresa,
+        string $asunto = null,
+        string $mensajePersonalizado = null,
+        string $firma = null
+    ) {
+        $this->cotizacion           = $cotizacion;
+        $this->empresa              = $empresa;
+        $this->asunto               = $asunto ?? 'Cotización ' . ($empresa->nombre ?? config('app.name')) . ' - ' . ($cotizacion->observaciones ?? 'Nuevo Presupuesto');
+        $this->mensajePersonalizado = $mensajePersonalizado;
+        $this->firma                = $firma;
     }
 
-    /**
-     * Get the message envelope.
-     */
     public function envelope(): Envelope
     {
-        return new Envelope(
-            subject: 'Cotización ' . ($this->empresa->nombre_empresa ?? config('app.name')) . ' - ' . ($this->cotizacion->observaciones ?? 'Nuevo Presupuesto'),
-        );
+        return new Envelope(subject: $this->asunto);
     }
 
-    /**
-     * Get the message content definition.
-     */
     public function content(): Content
     {
-        return new Content(
-            view: 'mail.cotizacion',
-        );
+        return new Content(view: 'mail.cotizacion');
     }
 
-    /**
-     * Get the attachments for the message.
-     *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
-     */
     public function attachments(): array
     {
         return [];

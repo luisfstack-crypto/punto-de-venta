@@ -102,39 +102,50 @@ class CotizacionController extends Controller
         return view('cotizacion.show', compact('cotizacion', 'empresa'));
     }
 
-    public function sendEmail(Cotizacion $cotizacion)
+    public function sendEmail(Request $request, Cotizacion $cotizacion)
     {
-        if (empty($cotizacion->cliente->persona->email)) {
-            return redirect()->back()->with('error', 'El cliente no tiene un correo electrónico registrado.');
-        }
+        $request->validate([
+            'destinatario' => 'required|email',
+            'asunto'       => 'required|string|max:255',
+            'mensaje'      => 'nullable|string|max:2000',
+            'firma'        => 'nullable|string|max:1000',
+        ]);
 
         try {
             $empresa = $this->empresaService->obtenerEmpresa();
 
-            \Illuminate\Support\Facades\Config::set('mail.from.name', $empresa->nombre ?? 'Punto de Venta');
+            \Illuminate\Support\Facades\Config::set(
+                'mail.from.name',
+                $cotizacion->user->empresa_nombre ?? $empresa->nombre ?? 'Punto de Venta'
+            );
 
             if ($empresa->mail_host && $empresa->mail_username && $empresa->mail_password) {
-                \Illuminate\Support\Facades\Config::set('mail.mailers.smtp.host', $empresa->mail_host);
-                \Illuminate\Support\Facades\Config::set('mail.mailers.smtp.port', $empresa->mail_port ?? 587);
+                \Illuminate\Support\Facades\Config::set('mail.mailers.smtp.host',     $empresa->mail_host);
+                \Illuminate\Support\Facades\Config::set('mail.mailers.smtp.port',     $empresa->mail_port ?? 587);
                 \Illuminate\Support\Facades\Config::set('mail.mailers.smtp.username', $empresa->mail_username);
                 \Illuminate\Support\Facades\Config::set('mail.mailers.smtp.password', $empresa->mail_password);
-                \Illuminate\Support\Facades\Config::set('mail.from.address', $empresa->mail_username);
+                \Illuminate\Support\Facades\Config::set('mail.from.address',          $empresa->mail_username);
             }
 
-            // SIN app()->forgetInstances()
+            $mailable = new \App\Mail\CotizacionMail(
+                $cotizacion,
+                $empresa,
+                $request->asunto,
+                $request->mensaje,
+                $request->firma
+            );
+
+            $mail = Mail::to($request->destinatario);
 
             if ($empresa->correo) {
-                Mail::to($cotizacion->cliente->persona->email)
-                    ->bcc($empresa->correo)
-                    ->send(new CotizacionMail($cotizacion, $empresa));
-            } else {
-                Mail::to($cotizacion->cliente->persona->email)
-                    ->send(new CotizacionMail($cotizacion, $empresa));
+                $mail->bcc($empresa->correo);
             }
+
+            $mail->send($mailable);
 
             $cotizacion->update(['enviado_at' => now()]);
 
-            return redirect()->back()->with('success', 'Cotización enviada por correo');
+            return redirect()->back()->with('success', 'Cotización enviada correctamente a ' . $request->destinatario);
 
         } catch (Exception $e) {
             Log::error('Error al enviar cotización', ['error' => $e->getMessage()]);
