@@ -41,4 +41,16 @@ class StoreVentaRequest extends FormRequest
             'arraydescripcion' => 'nullable|array',
         ];
     }
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $total = floatval($this->input('total'));
+            $recibido = floatval($this->input('monto_recibido'));
+
+            if ($recibido > 0 && $recibido < $total) {
+                $validator->errors()->add('monto_recibido', 'El monto recibido ($' . number_format($recibido, 2) . ') es menor al total ($' . number_format($total, 2) . ').');
+            }
+        });
+    }
 }
