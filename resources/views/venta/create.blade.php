@@ -332,7 +332,7 @@
                     data-live-search="true" data-size="5"
                     title="Escribe el nombre o código...">
                     @foreach ($productos as $item)
-                    <option value="{{ $item->id }}-{{ $item->cantidad }}-{{ $item->precio }}-{{ $item->nombre }}-{{ $item->sigla }}">
+                    <option value="{{ $item->id }}||{{ $item->cantidad }}||{{ $item->precio }}||{{ $item->nombre }}||{{ $item->sigla }}">
                         {{ 'Cód: '.$item->codigo.' · '.$item->nombre.' · '.$item->sigla }}
                     </option>
                     @endforeach
@@ -496,14 +496,14 @@
     const impuesto = @json($empresa->porcentaje_impuesto);
 
     function mostrarValores() {
-        let data = $('#producto_id').val().split('-');
+        let data = $('#producto_id').val().split('||');
         $('#stock').val(data[1]);
         $('#precio').val(data[2]);
         $('#cantidad').focus();
     }
 
     function agregarProducto() {
-        let data        = $('#producto_id').val().split('-');
+        let data        = $('#producto_id').val().split('||');
         let idProducto  = data[0];
         let nameProducto = data[3];
         let cantidad    = $('#cantidad').val();
