@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ProductoImagen extends Model
 {
+    protected $table = 'producto_imagenes';
     protected $guarded = ['id'];
 
     public function producto(): BelongsTo
