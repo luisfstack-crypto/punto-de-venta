@@ -150,15 +150,33 @@
                                             <p><span class="fw-bolder">Precio: </span>{{$item->precio ?? '—'}}</p>
                                         </div>
                                         <div class="col-12">
-                                            <p class="fw-bolder">Imagen:</p>
-                                            <div>
-                                                @if (!empty($item->img_path))
-                                                <img src="{{ asset($item->img_path) }}" alt="{{ $item->nombre }}"
-                                                    class="img-fluid img-thumbnail border border-4 rounded">
-                                                @else
-                                                <p>Sin imagen</p>
-                                                @endif
-                                            </div>
+                                            <p class="fw-bolder">Imágenes:</p>
+                                            @if($item->imagenes->count())
+                                                <div id="carousel-{{ $item->id }}" class="carousel slide" data-bs-ride="carousel">
+                                                    <div class="carousel-inner">
+                                                        @foreach($item->imagenes as $i => $img)
+                                                        <div class="carousel-item {{ $i === 0 ? 'active' : '' }}">
+                                                            <img src="{{ $img->img_path }}" class="d-block w-100 rounded"
+                                                                 style="max-height:280px;object-fit:contain;background:#f8fafc;">
+                                                        </div>
+                                                        @endforeach
+                                                    </div>
+                                                    @if($item->imagenes->count() > 1)
+                                                    <button class="carousel-control-prev" type="button"
+                                                            data-bs-target="#carousel-{{ $item->id }}" data-bs-slide="prev">
+                                                        <span class="carousel-control-prev-icon"></span>
+                                                    </button>
+                                                    <button class="carousel-control-next" type="button"
+                                                            data-bs-target="#carousel-{{ $item->id }}" data-bs-slide="next">
+                                                        <span class="carousel-control-next-icon"></span>
+                                                    </button>
+                                                    @endif
+                                                </div>
+                                            @elseif(!empty($item->img_path))
+                                                <img src="{{ asset($item->img_path) }}" class="img-fluid rounded">
+                                            @else
+                                                <p class="text-muted">Sin imágenes</p>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
