@@ -484,7 +484,7 @@
             if (!isNaN(recibido) && recibido >= total && total > 0) {
                 $('#vuelto').val((recibido - total).toFixed(2));
             } else {
-                $('#vuelto').val('');
+                $('#vuelto').val('0.00');
             }
         });
     });
