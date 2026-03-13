@@ -6,6 +6,19 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/css/bootstrap-select.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        @if(session('error'))
+            Swal.fire({ icon: 'error', title: 'Error', text: '{{ session('error') }}' });
+        @endif
+        @if(session('success'))
+            Swal.fire({ icon: 'success', title: '¡Listo!', text: '{{ session('success') }}' });
+        @endif
+        @if($errors->any())
+            Swal.fire({ icon: 'warning', title: 'Revisa el formulario', html: '{!! implode("<br>", $errors->all()) !!}' });
+        @endif
+    });
+</script>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
     .vta-wrap {
