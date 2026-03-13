@@ -166,6 +166,32 @@
         display: flex; justify-content: flex-end; align-items: center; gap: 12px;
         padding: 18px 22px; border-top: 1px solid var(--pv-border); background: #f8fafc;
     }
+
+    /* Grid de imágenes */
+    .pv-img-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 10px;
+    }
+    .pv-img-thumb {
+        position: relative;
+        aspect-ratio: 1;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1.5px solid var(--pv-border);
+        background: #f1f5f9;
+    }
+    .pv-img-thumb img {
+        width: 100%; height: 100%; object-fit: cover;
+    }
+    .pv-img-remove {
+        position: absolute; top: 4px; right: 4px;
+        width: 22px; height: 22px; border-radius: 50%;
+        background: rgba(0,0,0,.6); color: #fff;
+        border: none; font-size: 14px; line-height: 1;
+        cursor: pointer; display: flex; align-items: center; justify-content: center;
+    }
+    .pv-img-remove:hover { background: #ef4444; }
 </style>
 @endpush
 
@@ -314,14 +340,28 @@
                         @error('presentacione_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
 
-                    {{-- Imagen --}}
+                    {{-- Imágenes --}}
                     <div class="col-md-12">
-                        <p class="pv-section-label" style="margin-top:8px;">Imagen del producto</p>
+                        <p class="pv-section-label" style="margin-top:8px;">Imágenes del producto <span style="color:var(--pv-muted);font-weight:400;font-size:.75rem;">(máx. 5 — la primera será la principal)</span></p>
+
+                        {{-- Imágenes existentes --}}
+                        @if($producto->imagenes->count())
+                        <div class="pv-img-grid mb-3" id="existing-images">
+                            @foreach($producto->imagenes as $img)
+                            <div class="pv-img-thumb" data-id="{{ $img->id }}">
+                                <img src="{{ $img->img_path }}" alt="">
+                                <button type="button" class="pv-img-remove" onclick="removeExisting({{ $img->id }}, this)">×</button>
+                            </div>
+                            @endforeach
+                        </div>
+                        @endif
+
+                        {{-- Upload nuevas --}}
                         <div class="pv-img-upload" id="drop-zone">
-                            <input type="file" name="img_path" id="imagen" accept="image/*">
-                            <div class="pv-img-upload-label">Arrastra una imagen o haz clic para seleccionar (Opcional)</div>
-                            <div class="pv-img-upload-sub">PNG, JPG o WEBP — máx. 2 MB</div>
-                            <img id="img-preview" src="{{ $producto->img_path ? asset($producto->img_path) : '' }}" alt="Vista previa" style="{{ $producto->img_path ? 'display:block; max-height:200px; margin:10px auto;' : 'display:none; max-height:200px; margin:10px auto;' }}">
+                            <input type="file" name="imagenes[]" id="imagenes" accept="image/*" multiple>
+                            <div class="pv-img-upload-label">Arrastra hasta 5 imágenes o haz clic para seleccionar</div>
+                            <div class="pv-img-upload-sub">PNG, JPG o WEBP — máx. 2 MB por imagen</div>
+                            <div class="pv-img-grid mt-2" id="preview-grid"></div>
                         </div>
                     </div>
                 </div>
@@ -471,20 +511,55 @@ document.addEventListener('DOMContentLoaded', function () {
     toggle.addEventListener('change', actualizarSAT);
     actualizarSAT();
 
-    // ── Preview imagen ──
-    const inputImg = document.getElementById('imagen');
-    const preview  = document.getElementById('img-preview');
+    // ── Preview múltiples imágenes ──
+    const inputImg   = document.getElementById('imagenes');
+    const previewGrid = document.getElementById('preview-grid');
+    let selectedFiles = [];
 
     inputImg?.addEventListener('change', function () {
-        if (this.files && this.files[0]) {
+        const nuevos = Array.from(this.files);
+        const totalActual = document.querySelectorAll('#existing-images .pv-img-thumb').length;
+        const disponibles = 5 - totalActual - selectedFiles.length;
+
+        if (nuevos.length > disponibles) {
+            alert(`Solo puedes agregar ${disponibles} imagen(es) más.`);
+            return;
+        }
+
+        nuevos.forEach((file, i) => {
+            const idx = selectedFiles.length;
+            selectedFiles.push(file);
             const reader = new FileReader();
             reader.onload = e => {
-                preview.src = e.target.result;
-                preview.style.display = 'block';
+                const thumb = document.createElement('div');
+                thumb.className = 'pv-img-thumb';
+                thumb.dataset.idx = idx;
+                thumb.innerHTML = `<img src="${e.target.result}"><button type="button" class="pv-img-remove" onclick="removeNew(${idx}, this)">×</button>`;
+                previewGrid.appendChild(thumb);
             };
-            reader.readAsDataURL(this.files[0]);
-        }
+            reader.readAsDataURL(file);
+        });
+
+        // Reconstruir el input con los archivos seleccionados
+        rebuildInput();
     });
+
+    function removeNew(idx, btn) {
+        selectedFiles[idx] = null;
+        btn.closest('.pv-img-thumb').remove();
+        rebuildInput();
+    }
+
+    function rebuildInput() {
+        const dt = new DataTransfer();
+        selectedFiles.filter(f => f !== null).forEach(f => dt.items.add(f));
+        inputImg.files = dt.files;
+    }
+
+    function removeExisting(id, btn) {
+        btn.closest('.pv-img-thumb').remove();
+        // Agregar un input hidden para notificar al servidor que debe borrarse (puedes implementarlo después)
+    }
 
     // ── Sincronizar unidad de medida → clave SAT ──
     const unidadSelect = document.getElementById('unidad_medida');

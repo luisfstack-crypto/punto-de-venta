@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Producto extends Model
@@ -23,6 +24,11 @@ class Producto extends Model
     public function marca(): BelongsTo        { return $this->belongsTo(Marca::class); }
     public function presentacione(): BelongsTo { return $this->belongsTo(Presentacione::class); }
     public function inventario(): HasOne      { return $this->hasOne(Inventario::class); }
+
+    public function imagenes(): HasMany
+    {
+        return $this->hasMany(ProductoImagen::class)->orderBy('orden');
+    }
 
     // ─── Hooks ────────────────────────────────────────────────────────────────
 
