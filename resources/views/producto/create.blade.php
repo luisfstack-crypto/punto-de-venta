@@ -198,6 +198,17 @@
     <form action="{{ route('productos.store') }}" method="POST" enctype="multipart/form-data" id="form-producto">
         @csrf
 
+        @if ($errors->any())
+            <div class="alert alert-danger mb-3">
+                <strong>Por favor corrige los siguientes errores:</strong>
+                <ul class="mb-0 mt-1">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         {{-- ── SECCIÓN 1: Datos generales ── --}}
         <div class="pv-card">
             <div class="pv-card-header">
